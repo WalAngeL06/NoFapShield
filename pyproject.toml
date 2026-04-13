@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shield"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "nudenet",
+    "dnspython",
+    "mss",
+    "Pillow",
+    "bcrypt",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "pytest-timeout"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+timeout = 30
+testpaths = ["tests"]
