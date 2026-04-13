@@ -15,7 +15,7 @@ class BlocklistManager:
         Ignores comment lines (#), ignores '0.0.0.0' and 'localhost' entries.
         Returns count of loaded domains.
         """
-        with urllib.request.urlopen(BLOCKLIST_URL) as response:
+        with urllib.request.urlopen(BLOCKLIST_URL, timeout=30) as response:
             raw = response.read()
 
         domains: set[str] = set()
@@ -27,9 +27,9 @@ class BlocklistManager:
             if len(parts) < 2:
                 continue
             ip, domain = parts[0], parts[1].lower()
-            if domain in ("0.0.0.0", "localhost", "localhost.localdomain", "broadcasthost"):
+            if ip != "0.0.0.0":
                 continue
-            if domain.startswith("#"):
+            if domain in ("0.0.0.0", "localhost", "localhost.localdomain", "broadcasthost"):
                 continue
             domains.add(domain)
 

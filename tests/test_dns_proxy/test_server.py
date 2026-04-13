@@ -87,14 +87,16 @@ class TestDNSProxyServiceStart:
         query_wire = _make_query_wire(domain)
         addr = ("127.0.0.1", 12345)
 
-        mock_sock = MagicMock()
-        mock_sock.recvfrom.side_effect = [
-            (query_wire, addr),
-            socket.timeout(),
-        ]
-        svc.stop()  # pre-stop so loop exits after first timeout
-
         sent_packets = []
+
+        def recvfrom_side_effect(bufsize):
+            if not sent_packets:
+                return (query_wire, addr)
+            svc.stop()
+            raise socket.timeout()
+
+        mock_sock = MagicMock()
+        mock_sock.recvfrom.side_effect = recvfrom_side_effect
         mock_sock.sendto.side_effect = lambda d, a: sent_packets.append((d, a))
 
         with patch("socket.socket", return_value=mock_sock):
@@ -116,14 +118,16 @@ class TestDNSProxyServiceStart:
         upstream_response = dns.message.make_response(query)
         upstream_response_wire = upstream_response.to_wire()
 
-        mock_sock = MagicMock()
-        mock_sock.recvfrom.side_effect = [
-            (query_wire, addr),
-            socket.timeout(),
-        ]
-        svc.stop()
-
         sent_packets = []
+
+        def recvfrom_side_effect(bufsize):
+            if not sent_packets:
+                return (query_wire, addr)
+            svc.stop()
+            raise socket.timeout()
+
+        mock_sock = MagicMock()
+        mock_sock.recvfrom.side_effect = recvfrom_side_effect
         mock_sock.sendto.side_effect = lambda d, a: sent_packets.append((d, a))
 
         with patch("socket.socket", return_value=mock_sock), \
@@ -141,13 +145,17 @@ class TestDNSProxyServiceStart:
         query_wire = _make_query_wire(domain)
         addr = ("127.0.0.1", 12345)
 
+        sent_packets = []
+
+        def recvfrom_side_effect(bufsize):
+            if not sent_packets:
+                return (query_wire, addr)
+            svc.stop()
+            raise socket.timeout()
+
         mock_sock = MagicMock()
-        mock_sock.recvfrom.side_effect = [
-            (query_wire, addr),
-            socket.timeout(),
-        ]
-        mock_sock.sendto = MagicMock()
-        svc.stop()
+        mock_sock.recvfrom.side_effect = recvfrom_side_effect
+        mock_sock.sendto.side_effect = lambda d, a: sent_packets.append((d, a))
 
         with patch("socket.socket", return_value=mock_sock):
             svc.start()
@@ -161,13 +169,18 @@ class TestDNSProxyServiceStart:
         bad_data = b"\x00\x01garbage"
         addr = ("127.0.0.1", 12345)
 
+        call_count = [0]
+
+        def recvfrom_side_effect(bufsize):
+            call_count[0] += 1
+            if call_count[0] == 1:
+                return (bad_data, addr)
+            svc.stop()
+            raise socket.timeout()
+
         mock_sock = MagicMock()
-        mock_sock.recvfrom.side_effect = [
-            (bad_data, addr),
-            socket.timeout(),
-        ]
+        mock_sock.recvfrom.side_effect = recvfrom_side_effect
         mock_sock.sendto = MagicMock()
-        svc.stop()
 
         with patch("socket.socket", return_value=mock_sock):
             svc.start()
@@ -182,14 +195,16 @@ class TestDNSProxyServiceStart:
         query_wire = _make_query_wire(domain)
         addr = ("127.0.0.1", 12345)
 
-        mock_sock = MagicMock()
-        mock_sock.recvfrom.side_effect = [
-            (query_wire, addr),
-            socket.timeout(),
-        ]
-        svc.stop()
-
         sent_packets = []
+
+        def recvfrom_side_effect(bufsize):
+            if not sent_packets:
+                return (query_wire, addr)
+            svc.stop()
+            raise socket.timeout()
+
+        mock_sock = MagicMock()
+        mock_sock.recvfrom.side_effect = recvfrom_side_effect
         mock_sock.sendto.side_effect = lambda d, a: sent_packets.append((d, a))
 
         with patch("socket.socket", return_value=mock_sock), \
@@ -204,9 +219,12 @@ class TestDNSProxyServiceStart:
         blocklist = _make_empty_blocklist()
         svc = DNSProxyService(blocklist)
 
+        def recvfrom_side_effect(bufsize):
+            svc.stop()
+            raise socket.timeout()
+
         mock_sock = MagicMock()
-        mock_sock.recvfrom.side_effect = [socket.timeout()]
-        svc.stop()
+        mock_sock.recvfrom.side_effect = recvfrom_side_effect
 
         with patch("socket.socket", return_value=mock_sock):
             svc.start()

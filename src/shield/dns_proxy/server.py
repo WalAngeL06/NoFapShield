@@ -21,6 +21,7 @@ class DNSProxyService:
         self._upstream = upstream
         self._stop_event = threading.Event()
         self._last_queried_domain: str | None = None
+        self._domain_lock = threading.Lock()
 
     def start(self) -> None:
         """Binds UDP socket to 127.0.0.1:53.
@@ -28,6 +29,7 @@ class DNSProxyService:
         Blocked domains: returns NXDOMAIN response.
         Runs in current thread until stop() is called.
         """
+        self._stop_event.clear()
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((_LISTEN_ADDR, _LISTEN_PORT))
         sock.settimeout(1.0)
@@ -45,22 +47,25 @@ class DNSProxyService:
                 except Exception:
                     continue
 
-                domain = self._extract_domain(request)
-                if domain:
-                    self._last_queried_domain = domain
-
-                if domain and self._blocklist.is_blocked(domain):
-                    response = dns.message.make_response(request)
-                    response.set_rcode(dns.rcode.NXDOMAIN)
-                    sock.sendto(response.to_wire(), addr)
-                else:
-                    try:
-                        upstream_resp = dns.query.udp(request, self._upstream, timeout=5)
-                        sock.sendto(upstream_resp.to_wire(), addr)
-                    except Exception:
+                try:
+                    domain = self._extract_domain(request)
+                    if domain:
+                        with self._domain_lock:
+                            self._last_queried_domain = domain
+                    if domain and self._blocklist.is_blocked(domain):
                         response = dns.message.make_response(request)
-                        response.set_rcode(dns.rcode.SERVFAIL)
+                        response.set_rcode(dns.rcode.NXDOMAIN)
                         sock.sendto(response.to_wire(), addr)
+                    else:
+                        try:
+                            upstream_resp = dns.query.udp(request, self._upstream, timeout=5)
+                            sock.sendto(upstream_resp.to_wire(), addr)
+                        except Exception:
+                            response = dns.message.make_response(request)
+                            response.set_rcode(dns.rcode.SERVFAIL)
+                            sock.sendto(response.to_wire(), addr)
+                except Exception:
+                    continue
         finally:
             sock.close()
 
@@ -70,7 +75,8 @@ class DNSProxyService:
 
     def get_last_queried_domain(self) -> str | None:
         """Returns the most recently queried domain (for orchestrator DNS TTL)."""
-        return self._last_queried_domain
+        with self._domain_lock:
+            return self._last_queried_domain
 
     @staticmethod
     def _extract_domain(request: dns.message.Message) -> str | None:
