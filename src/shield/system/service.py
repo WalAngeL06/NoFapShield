@@ -30,7 +30,7 @@ class NSSMService:
         """
         try:
             result = self._run("status", self.SERVICE_NAME)
-            return result.stdout.decode(errors="replace").strip()
+            return result.stdout.decode(errors="replace").strip() or "UNKNOWN"
         except Exception:
             return "UNKNOWN"
 

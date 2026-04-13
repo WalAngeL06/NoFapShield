@@ -12,6 +12,8 @@ class UninstallProtection:
 
     def __init__(self, db: DBService, user_id: int) -> None:
         self._db = db
+        # user_id reserved for future multi-user support;
+        # current operations use global settings keys
         self._user_id = user_id
 
     def verify_password(self, password: str) -> bool:
