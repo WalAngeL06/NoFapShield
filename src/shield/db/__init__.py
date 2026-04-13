@@ -48,6 +48,9 @@ class DBService:
             )
             conn.commit()
             return cur.lastrowid
+        except Exception:
+            conn.rollback()
+            raise
         finally:
             conn.close()
 
@@ -78,6 +81,7 @@ class DBService:
         today = now.date()
         conn = self._connect()
         try:
+            conn.execute("BEGIN IMMEDIATE")
             row = conn.execute(
                 "SELECT id, user_id, started_at, last_active, current_days, longest_days "
                 "FROM streaks WHERE user_id = ? ORDER BY id DESC LIMIT 1",
@@ -106,10 +110,11 @@ class DBService:
 
             # Same day — nothing to update
             if new_current == current_days and new_longest == longest_days:
+                conn.commit()
                 return streak_row_to_info(row)
 
             # Reset: update started_at to now
-            if new_current == 1 and current_days != 1:
+            if new_current == 1:
                 started_at = now
 
             conn.execute(
@@ -130,6 +135,9 @@ class DBService:
                 longest_days=new_longest,
                 last_reset=started_at,
             )
+        except Exception:
+            conn.rollback()
+            raise
         finally:
             conn.close()
 
@@ -138,6 +146,11 @@ class DBService:
     # ------------------------------------------------------------------
 
     def record_friction(self, event: FrictionEvent) -> None:
+        """Record a friction event to the logs table.
+
+        Note: records with user_id=1 (single-user app). Caller must ensure
+        user 1 exists (created via create_user) before calling this method.
+        """
         conn = self._connect()
         try:
             conn.execute(
@@ -154,6 +167,9 @@ class DBService:
                 ),
             )
             conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
         finally:
             conn.close()
 
@@ -183,6 +199,9 @@ class DBService:
                 (key, serialized),
             )
             conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
         finally:
             conn.close()
 
@@ -190,7 +209,8 @@ class DBService:
     # Goals
     # ------------------------------------------------------------------
 
-    def get_goals(self, user_id: int) -> list[UserGoal]:
+    def get_goals(self) -> list[UserGoal]:
+        """Return all goals (questions) in the database."""
         conn = self._connect()
         try:
             rows = conn.execute(
