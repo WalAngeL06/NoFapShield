@@ -280,3 +280,12 @@ class TestTestConnection:
 
         mock_smtp.starttls.assert_called_once()
         mock_smtp.login.assert_called_once_with("sender@example.com", "secret")
+
+    def test_connection_skips_login_with_empty_credentials(self):
+        config = AccountabilityConfig(smtp_host="mail.example.com", enabled=True)
+        service = AccountabilityService(config)
+        with patch("shield.privacy.accountability.smtplib.SMTP") as mock_smtp_cls:
+            mock_smtp = MagicMock()
+            mock_smtp_cls.return_value.__enter__.return_value = mock_smtp
+            result = service.test_connection()
+            mock_smtp.login.assert_not_called()

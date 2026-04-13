@@ -21,6 +21,11 @@ class AccountabilityError(Exception):
     pass
 
 
+def _sanitize_header(value: str) -> str:
+    """Remove newlines from header values to prevent injection."""
+    return value.replace("\r", "").replace("\n", "")
+
+
 class AccountabilityService:
     def __init__(self, config: AccountabilityConfig) -> None:
         self._config = config
@@ -45,8 +50,8 @@ class AccountabilityService:
 
         msg = MIMEText(body)
         msg["Subject"] = "Shield: accountability check-in"
-        msg["From"] = self._config.smtp_user
-        msg["To"] = self._config.partner_email
+        msg["From"] = _sanitize_header(self._config.smtp_user)
+        msg["To"] = _sanitize_header(self._config.partner_email)
 
         try:
             with smtplib.SMTP(self._config.smtp_host, self._config.smtp_port) as smtp:
@@ -66,7 +71,8 @@ class AccountabilityService:
         try:
             with smtplib.SMTP(self._config.smtp_host, self._config.smtp_port) as smtp:
                 smtp.starttls()
-                smtp.login(self._config.smtp_user, self._config.smtp_password)
+                if self._config.smtp_user and self._config.smtp_password:
+                    smtp.login(self._config.smtp_user, self._config.smtp_password)
             return True
         except Exception:
             return False
