@@ -76,3 +76,26 @@ def test_classify_returns_nsfw_score_instance(mock_cls):
     result = NSFWClassifier().classify(_result())
 
     assert isinstance(result, NSFWScore)
+
+
+@patch("shield.detection.classifier.os.unlink")
+@patch("shield.detection.classifier.NudeDetector")
+def test_temp_file_is_always_unlinked(mock_cls, mock_unlink):
+    """Verifies temp file cleanup runs in the normal (success) path."""
+    mock_cls.return_value.detect.return_value = []
+    # get a valid ScreenshotResult from the existing test helper or create one inline
+    from datetime import datetime
+    result = ScreenshotResult(image_bytes=b"\x89PNG\r\n", captured_at=datetime.utcnow())
+    NSFWClassifier().classify(result)
+    assert mock_unlink.call_count == 1
+
+@patch("shield.detection.classifier.os.unlink")
+@patch("shield.detection.classifier.NudeDetector")
+def test_temp_file_unlinked_on_exception(mock_cls, mock_unlink):
+    """Verifies temp file cleanup runs even when NudeNet raises."""
+    mock_cls.return_value.detect.side_effect = RuntimeError("model crash")
+    from datetime import datetime
+    result = ScreenshotResult(image_bytes=b"\x89PNG\r\n", captured_at=datetime.utcnow())
+    with pytest.raises(RuntimeError):
+        NSFWClassifier().classify(result)
+    assert mock_unlink.call_count == 1

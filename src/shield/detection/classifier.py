@@ -18,6 +18,12 @@ class NSFWClassifier:
         NudeDetector can open the file by path (required on Windows where
         delete=True locks the file while the context is open).
         The temp file is always removed in the finally block.
+
+        Note: NudeNet requires a file path and cannot accept BytesIO directly.
+        Uses NamedTemporaryFile with delete=False + explicit os.unlink in finally
+        block for Windows compatibility (Windows locks open temp files, preventing
+        NudeDetector from reading them). The plan's privacy/CLAUDE.md explicitly
+        permits this approach as an ephemeral fallback.
         """
         tmp_path: str | None = None
         try:
