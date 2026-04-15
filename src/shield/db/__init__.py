@@ -1,6 +1,6 @@
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -39,7 +39,7 @@ class DBService:
     # ------------------------------------------------------------------
 
     def create_user(self, password_hash: str) -> int:
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         conn = self._connect()
         try:
             cur = conn.execute(
@@ -72,12 +72,12 @@ class DBService:
             return StreakInfo(
                 current_days=0,
                 longest_days=0,
-                last_reset=datetime.utcnow(),
+                last_reset=datetime.now(timezone.utc),
             )
         return streak_row_to_info(row)
 
     def update_streak(self, user_id: int) -> StreakInfo:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         today = now.date()
         conn = self._connect()
         try:
@@ -219,3 +219,29 @@ class DBService:
         finally:
             conn.close()
         return [goal_row_to_goal(row) for row in rows]
+
+    # ------------------------------------------------------------------
+    # Trigger log
+    # ------------------------------------------------------------------
+
+    def get_logs(self, user_id: int, limit: int = 100) -> list[dict]:
+        """Return the most recent friction log entries for *user_id*."""
+        conn = self._connect()
+        try:
+            rows = conn.execute(
+                "SELECT session_id, triggered_at, final_score, threshold, source "
+                "FROM logs WHERE user_id = ? ORDER BY id DESC LIMIT ?",
+                (user_id, limit),
+            ).fetchall()
+        finally:
+            conn.close()
+        return [
+            {
+                "session_id": r[0],
+                "triggered_at": r[1],
+                "final_score": r[2],
+                "threshold": r[3],
+                "source": r[4],
+            }
+            for r in rows
+        ]

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from shield.core.interfaces import DomainScore, HybridScore, NSFWScore, TriggerSource
 
@@ -29,6 +29,6 @@ class HybridScorer:
             domain=domain,
             url_score=url_score,
             source=source,
-            computed_at=datetime.utcnow(),
+            computed_at=datetime.now(timezone.utc),
             nsfw=nsfw,
         )

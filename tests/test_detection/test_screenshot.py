@@ -10,10 +10,14 @@ from shield.detection.screenshot import ScreenshotCapture
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _fake_to_png(data, size, output=None):
-    """Write a minimal PNG header so buf.getvalue() is non-empty."""
-    if output is not None:
-        output.write(b"\x89PNG\r\n\x1a\n" + b"\x00" * 50)
+def _fake_to_png(data, size, /, *, level=6, output=None):
+    """Return minimal PNG bytes when output is None (new mss ≥10 API)."""
+    if output is None:
+        return b"\x89PNG\r\n\x1a\n" + b"\x00" * 50
+    # output is a path — write and return None (legacy path, not used by capture)
+    with open(output, "wb") as f:
+        f.write(b"\x89PNG\r\n\x1a\n" + b"\x00" * 50)
+    return None
 
 
 def _make_mss_ctx():

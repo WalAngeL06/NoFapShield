@@ -4,7 +4,7 @@ import logging
 import threading
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from queue import Queue, Empty
 from typing import Callable
 
@@ -28,7 +28,7 @@ class Orchestrator:
         self._threads: list[threading.Thread] = []
         self._event_loop_thread: threading.Thread | None = None
         # DNS TTL state: (match_score, timestamp)
-        self._last_dns_score: tuple[float, datetime] = (0.0, datetime.utcnow())
+        self._last_dns_score: tuple[float, datetime] = (0.0, datetime.now(timezone.utc))
         self._dns_lock = threading.Lock()
 
     def register_friction_callback(self, cb: Callable[[FrictionEvent], None]) -> None:
@@ -90,7 +90,7 @@ class Orchestrator:
     def _current_dns_score(self) -> DomainScore:
         with self._dns_lock:
             score, ts = self._last_dns_score
-            age = (datetime.utcnow() - ts).total_seconds()
+            age = (datetime.now(timezone.utc) - ts).total_seconds()
             if age > self._config.dns_score_ttl:
                 return DomainScore(domain="", match_score=0.0)
             return DomainScore(domain="", match_score=score)
@@ -98,7 +98,7 @@ class Orchestrator:
     def update_dns_score(self, domain: str, match_score: float) -> None:
         """Called by DNS thread to update the current domain score."""
         with self._dns_lock:
-            self._last_dns_score = (match_score, datetime.utcnow())
+            self._last_dns_score = (match_score, datetime.now(timezone.utc))
 
     def _run_event_loop(self) -> None:
         while not self._shutdown_event.is_set():
@@ -110,7 +110,7 @@ class Orchestrator:
             if score.final_score >= threshold:
                 event = FrictionEvent(
                     score=score,
-                    triggered_at=datetime.utcnow(),
+                    triggered_at=datetime.now(timezone.utc),
                     session_id=str(uuid.uuid4()),
                     threshold_at_trigger=threshold,
                 )
