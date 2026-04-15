@@ -1,7 +1,9 @@
 """Tests for NSFWClassifier — NudeDetector is mocked to avoid model loading."""
-from datetime import datetime
-from unittest.mock import MagicMock, patch
+from datetime import datetime, timezone
+from unittest.mock import patch
 
+import cv2
+import numpy as np
 import pytest
 
 from shield.core.interfaces import NSFWScore, ScreenshotResult
@@ -12,8 +14,19 @@ from shield.detection.classifier import NSFWClassifier
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _result(image_bytes: bytes = b"\x89PNG\r\n\x1a\n" + b"\x00" * 50) -> ScreenshotResult:
-    return ScreenshotResult(image_bytes=image_bytes, captured_at=datetime.utcnow())
+def _make_png(width: int = 100, height: int = 100) -> bytes:
+    """Return valid PNG bytes for a solid-colour image (cv2-decodable)."""
+    img = np.zeros((height, width, 3), dtype=np.uint8)
+    ok, buf = cv2.imencode(".png", img)
+    assert ok
+    return bytes(buf)
+
+
+def _result(image_bytes: bytes | None = None) -> ScreenshotResult:
+    return ScreenshotResult(
+        image_bytes=image_bytes if image_bytes is not None else _make_png(),
+        captured_at=datetime.now(timezone.utc),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -81,21 +94,18 @@ def test_classify_returns_nsfw_score_instance(mock_cls):
 @patch("shield.detection.classifier.os.unlink")
 @patch("shield.detection.classifier.NudeDetector")
 def test_temp_file_is_always_unlinked(mock_cls, mock_unlink):
-    """Verifies temp file cleanup runs in the normal (success) path."""
+    """Each tile writes+unlinks a temp file — 3×3 grid = 9 calls."""
     mock_cls.return_value.detect.return_value = []
-    # get a valid ScreenshotResult from the existing test helper or create one inline
-    from datetime import datetime
-    result = ScreenshotResult(image_bytes=b"\x89PNG\r\n", captured_at=datetime.utcnow())
-    NSFWClassifier().classify(result)
-    assert mock_unlink.call_count == 1
+    NSFWClassifier().classify(_result())
+    assert mock_unlink.call_count == 9  # one per tile
+
 
 @patch("shield.detection.classifier.os.unlink")
 @patch("shield.detection.classifier.NudeDetector")
 def test_temp_file_unlinked_on_exception(mock_cls, mock_unlink):
-    """Verifies temp file cleanup runs even when NudeNet raises."""
+    """Temp file is cleaned up even when NudeNet raises on first tile."""
     mock_cls.return_value.detect.side_effect = RuntimeError("model crash")
-    from datetime import datetime
-    result = ScreenshotResult(image_bytes=b"\x89PNG\r\n", captured_at=datetime.utcnow())
     with pytest.raises(RuntimeError):
-        NSFWClassifier().classify(result)
-    assert mock_unlink.call_count == 1
+        NSFWClassifier().classify(_result())
+    # At least the first tile's temp file must be unlinked.
+    assert mock_unlink.call_count >= 1
