@@ -1,4 +1,3 @@
-import io
 from datetime import datetime, timezone
 
 import mss
@@ -13,9 +12,7 @@ class ScreenshotCapture:
         with mss.mss() as sct:
             monitor = sct.monitors[1]
             screenshot = sct.grab(monitor)
-            buf = io.BytesIO()
-            mss.tools.to_png(screenshot.rgb, screenshot.size, output=buf)
-            image_bytes = buf.getvalue()
+            image_bytes = mss.tools.to_png(screenshot.rgb, screenshot.size)
         return ScreenshotResult(
             image_bytes=image_bytes,
             captured_at=datetime.now(timezone.utc),
