@@ -3,7 +3,7 @@ from __future__ import annotations
 import urllib.request
 from shield.core.interfaces import DomainScore
 
-BLOCKLIST_URL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+BLOCKLIST_URL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts"
 
 
 class BlocklistManager:
