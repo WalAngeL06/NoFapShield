@@ -12,6 +12,7 @@ dependencies = [
     "mss",
     "Pillow",
     "bcrypt",
+    "PyQt6",
 ]
 
 [project.optional-dependencies]

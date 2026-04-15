@@ -91,8 +91,8 @@ def test_dns_score_ttl_expires():
     orch = Orchestrator(config=config, db=db)
 
     # Set a DNS score
-    from datetime import datetime, timedelta
-    orch._last_dns_score = (1.0, datetime.utcnow() - timedelta(seconds=5))
+    from datetime import datetime, timedelta, timezone
+    orch._last_dns_score = (1.0, datetime.now(timezone.utc) - timedelta(seconds=5))
 
     score = orch._current_dns_score()
     assert score.match_score == 0.0
@@ -104,8 +104,8 @@ def test_dns_score_valid_within_ttl():
     db = MagicMock()
     orch = Orchestrator(config=config, db=db)
 
-    from datetime import datetime
-    orch._last_dns_score = (1.0, datetime.utcnow())
+    from datetime import datetime, timezone
+    orch._last_dns_score = (1.0, datetime.now(timezone.utc))
 
     score = orch._current_dns_score()
     assert score.match_score == 1.0

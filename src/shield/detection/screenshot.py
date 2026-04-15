@@ -1,5 +1,5 @@
 import io
-from datetime import datetime
+from datetime import datetime, timezone
 
 import mss
 import mss.tools
@@ -18,5 +18,5 @@ class ScreenshotCapture:
             image_bytes = buf.getvalue()
         return ScreenshotResult(
             image_bytes=image_bytes,
-            captured_at=datetime.utcnow(),
+            captured_at=datetime.now(timezone.utc),
         )
