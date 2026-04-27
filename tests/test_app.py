@@ -40,7 +40,8 @@ def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys, monkeypatch):
     overlay_calls: list[None] = []
     default_calls: list[None] = []
 
-    def fake_overlay() -> int:
+    def fake_overlay(db_path=None) -> int:
+        del db_path
         overlay_calls.append(None)
         return 0
 
@@ -77,13 +78,16 @@ def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys, monkeypatch):
 
 def test_demo_trigger_show_overlay_records_event_and_delegates(tmp_path, capsys, monkeypatch):
     db_path = tmp_path / "demo.db"
-    overlay_calls: list[None] = []
+    with EventStore(db_path) as store:
+        store.set_setting("alternative_actions", ["Yuru", "Su ic"])
+    received_actions: list[list[str] | None] = []
 
-    def fake_overlay() -> int:
-        overlay_calls.append(None)
+    def fake_overlay(*, alternative_actions=None, countdown_seconds=15) -> int:
+        del countdown_seconds
+        received_actions.append(alternative_actions)
         return 17
 
-    monkeypatch.setattr("shield.app._run_overlay_screen", fake_overlay)
+    monkeypatch.setattr("shield.ui.blur_overlay.run_overlay", fake_overlay)
 
     result = main(["--demo-trigger", "--show-overlay", "--db-path", str(db_path)])
 
@@ -97,7 +101,7 @@ def test_demo_trigger_show_overlay_records_event_and_delegates(tmp_path, capsys,
     assert parsed["threshold"] == "0.70"
     assert parsed["session_id"]
     assert parsed["overlay"] == "launched"
-    assert overlay_calls == [None]
+    assert received_actions == [["Yuru", "Su ic"]]
 
     store = EventStore(db_path)
     assert store.count_events() == 1
@@ -182,11 +186,47 @@ def test_default_startup_when_settings_read_fails_delegates_to_onboarding(monkey
 
 
 def test_overlay_screen_delegates_to_ui(monkeypatch):
-    monkeypatch.setattr("shield.app._run_overlay_screen", lambda: 23)
+    monkeypatch.setattr("shield.app._run_overlay_screen", lambda db_path: 23)
 
     result = main(["--screen", "overlay"])
 
     assert result == 23
+
+
+def test_overlay_screen_reads_saved_alternative_actions(tmp_path, monkeypatch):
+    db_path = tmp_path / "settings.db"
+    with EventStore(db_path) as store:
+        store.set_setting("alternative_actions", ["  Yuru  ", "", "Su ic", "Nefes", "Fazla"])
+    received_actions: list[list[str] | None] = []
+
+    def fake_overlay(*, alternative_actions=None, countdown_seconds=15) -> int:
+        del countdown_seconds
+        received_actions.append(alternative_actions)
+        return 23
+
+    monkeypatch.setattr("shield.ui.blur_overlay.run_overlay", fake_overlay)
+
+    result = main(["--screen", "overlay", "--db-path", str(db_path)])
+
+    assert result == 23
+    assert received_actions == [["Yuru", "Su ic", "Nefes"]]
+
+
+def test_overlay_screen_falls_back_when_actions_missing(tmp_path, monkeypatch):
+    db_path = tmp_path / "settings.db"
+    received_actions: list[list[str] | None] = []
+
+    def fake_overlay(*, alternative_actions=None, countdown_seconds=15) -> int:
+        del countdown_seconds
+        received_actions.append(alternative_actions)
+        return 23
+
+    monkeypatch.setattr("shield.ui.blur_overlay.run_overlay", fake_overlay)
+
+    result = main(["--screen", "overlay", "--db-path", str(db_path)])
+
+    assert result == 23
+    assert received_actions == [None]
 
 
 def test_checkin_screen_delegates_to_ui(monkeypatch, tmp_path):

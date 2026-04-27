@@ -5,7 +5,7 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `80 passed`
+- Tests passing: `91 passed`
 - Latest known committed product checkpoint:
   `d9ce5d4 feat: add default startup flow`
 - Latest known fix:
@@ -25,11 +25,13 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Use saved alternative actions in overlay.
+
+- Status: implemented locally, not committed by the AI.
 
 ## Next Recommended Tasks
 
-1. Use saved alternative actions in overlay.
+1. Review and manually commit the local saved-actions overlay change.
 2. Later: optional local detection.
 3. Later: optional DNS/domain heuristics.
 4. Later: installer/release packaging.

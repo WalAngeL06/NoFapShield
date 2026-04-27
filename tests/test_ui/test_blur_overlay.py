@@ -11,6 +11,7 @@ def test_blur_overlay_import_smoke():
     from shield.ui import blur_overlay
 
     assert hasattr(blur_overlay, "BlurOverlayWindow")
+    assert hasattr(blur_overlay, "normalize_alternative_actions")
     assert hasattr(blur_overlay, "run_overlay")
     assert blur_overlay.COUNTDOWN_SECONDS == 15
     assert len(blur_overlay.ACTION_CARDS) == 3
@@ -36,8 +37,42 @@ def test_blur_overlay_window_close_and_key_guards(qapp):
     assert window.can_close() is True
 
 
+def test_normalize_alternative_actions_trims_filters_and_caps():
+    from shield.ui.blur_overlay import normalize_alternative_actions
+
+    actions = normalize_alternative_actions([
+        "  Yuru  ",
+        "",
+        "Su ic",
+        42,
+        "Nefes",
+        "Fazla",
+    ])
+
+    assert actions == ["Yuru", "Su ic", "Nefes"]
+
+
+@pytest.mark.parametrize("value", [None, [], ["   "], {"bad": "value"}, "[]", "{bad json"])
+def test_normalize_alternative_actions_falls_back_to_defaults(value):
+    from shield.ui.blur_overlay import DEFAULT_ALTERNATIVE_ACTIONS, normalize_alternative_actions
+
+    assert normalize_alternative_actions(value) == list(DEFAULT_ALTERNATIVE_ACTIONS)
+
+
+def test_blur_overlay_window_renders_custom_action_labels(qapp):
+    from shield.ui.blur_overlay import ActionCardButton, BlurOverlayWindow
+
+    window = BlurOverlayWindow(alternative_actions=["  Yuru  ", "Su ic"])
+
+    labels = [button.text() for button in window.findChildren(ActionCardButton)]
+    assert any("Yuru" in label for label in labels)
+    assert any("Su ic" in label for label in labels)
+
+
 def test_run_overlay_owns_event_loop_when_no_qapplication(monkeypatch):
     from shield.ui import blur_overlay
+
+    _FakeOverlayWindow.instances.clear()
 
     fake_app = _FakeApplication(exec_result=42)
     fake_qapplication = _FakeQApplication(instance_value=None, created_app=fake_app)
@@ -50,10 +85,13 @@ def test_run_overlay_owns_event_loop_when_no_qapplication(monkeypatch):
     assert fake_qapplication.created is True
     assert fake_app.exec_called is True
     assert _FakeOverlayWindow.instances[-1].shown is True
+    assert _FakeOverlayWindow.instances[-1].alternative_actions is None
 
 
 def test_run_overlay_returns_without_exec_when_qapplication_exists(monkeypatch):
     from shield.ui import blur_overlay
+
+    _FakeOverlayWindow.instances.clear()
 
     existing_app = _FakeApplication(exec_result=99)
     fake_qapplication = _FakeQApplication(instance_value=existing_app, created_app=None)
@@ -67,6 +105,23 @@ def test_run_overlay_returns_without_exec_when_qapplication_exists(monkeypatch):
     assert existing_app.exec_called is False
     assert _FakeOverlayWindow.instances[-1].shown is True
     assert blur_overlay._active_overlay_window is _FakeOverlayWindow.instances[-1]
+
+
+def test_run_overlay_passes_custom_actions_without_owning_event_loop(monkeypatch):
+    from shield.ui import blur_overlay
+
+    _FakeOverlayWindow.instances.clear()
+
+    existing_app = _FakeApplication(exec_result=99)
+    fake_qapplication = _FakeQApplication(instance_value=existing_app, created_app=None)
+    monkeypatch.setattr(blur_overlay, "QApplication", fake_qapplication)
+    monkeypatch.setattr(blur_overlay, "BlurOverlayWindow", _FakeOverlayWindow)
+
+    result = blur_overlay.run_overlay(alternative_actions=["Yuru", "Su ic"])
+
+    assert result == 0
+    assert existing_app.exec_called is False
+    assert _FakeOverlayWindow.instances[-1].alternative_actions == ["Yuru", "Su ic"]
 
 
 class _FakeApplication:
@@ -105,8 +160,9 @@ class _FakeSignal:
 class _FakeOverlayWindow:
     instances = []
 
-    def __init__(self, countdown_seconds) -> None:
+    def __init__(self, countdown_seconds, alternative_actions=None) -> None:
         self.countdown_seconds = countdown_seconds
+        self.alternative_actions = alternative_actions
         self.destroyed = _FakeSignal()
         self.shown = False
         self.raised = False

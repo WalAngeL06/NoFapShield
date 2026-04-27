@@ -33,10 +33,10 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _run_overlay_screen() -> int:
+def _run_overlay_screen(db_path: str | None = None) -> int:
     from shield.ui.blur_overlay import run_overlay
 
-    return run_overlay()
+    return run_overlay(alternative_actions=_read_saved_alternative_actions(db_path))
 
 
 def _run_checkin_screen(db_path: str) -> int:
@@ -61,6 +61,21 @@ def _run_onboarding_screen(db_path: str | None = None) -> int:
     from shield.ui.onboarding import run_onboarding
 
     return run_onboarding(db_path=db_path)
+
+
+def _read_saved_alternative_actions(db_path: str | None) -> list[str] | None:
+    if db_path is None:
+        return None
+    try:
+        with EventStore(db_path) as store:
+            value = store.get_setting("alternative_actions", None)
+    except Exception:
+        return None
+
+    from shield.ui.blur_overlay import normalize_alternative_actions
+
+    actions = normalize_alternative_actions(value, fallback=())
+    return actions or None
 
 
 def _run_default_screen(db_path: str) -> int:
@@ -107,8 +122,7 @@ def _run_demo_trigger(config: Config, db_path: str, show_overlay: bool = False) 
         return 0
 
     print("overlay=launched")
-    # TODO: Pass saved alternative_actions once the overlay runner accepts custom cards.
-    return _run_overlay_screen()
+    return _run_overlay_screen(db_path)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -119,11 +133,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.show_overlay and args.screen is not None:
         parser.error("--show-overlay cannot be used with --screen")
 
-    if args.screen == "overlay":
-        return _run_overlay_screen()
-
     config = Config()
     db_path = args.db_path if args.db_path is not None else config.db_path
+    if args.screen == "overlay":
+        return _run_overlay_screen(db_path)
     if args.screen == "dashboard":
         return _run_dashboard_screen(db_path)
     if args.screen == "settings":

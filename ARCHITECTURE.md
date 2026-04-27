@@ -47,12 +47,13 @@ onboarding.
 
 `--demo-trigger` records and prints a synthetic friction event without opening
 UI by default. `--demo-trigger --show-overlay` records and prints the same event,
-then delegates to the existing PyQt6 overlay runner. The separate
-`--screen overlay` command remains unchanged.
+then delegates to the existing PyQt6 overlay runner. Overlay launch paths read
+local `alternative_actions` settings and pass them to the overlay when present;
+the overlay falls back to default action cards otherwise.
 
 `--screen onboarding` saves goal text, alternative actions, optional local email
 placeholder, and an onboarding completion flag through the local settings store.
-It does not send email or wire saved alternative actions into the overlay.
+It does not send email.
 
 ## Explicitly Forbidden Current Architecture
 

@@ -20,7 +20,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `80 passed`.
+Current tests: `91 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
@@ -35,13 +35,19 @@ does not open the overlay.
 `--screen onboarding` is current committed functionality. It provides a
 local-only PyQt6 setup flow for a personal goal, alternative actions, optional
 local email placeholder, and `onboarding_completed=true`. No email is sent in
-v0.1. Saved alternative actions are not wired into the pause overlay yet.
+v0.1. Saved alternative actions are used by the pause overlay when available.
 
 Bare `python -m shield.app` is current committed functionality. It reads local
 `onboarding_completed` state and routes to dashboard when complete or onboarding
 when missing, false, malformed, or unreadable.
 
-Next recommended product task: use saved alternative actions in overlay.
+Current local product change: overlay launch paths now read local
+`alternative_actions` from settings/onboarding and pass them into the pause
+overlay. Missing, empty, malformed, or unreadable actions fall back to default
+action cards.
+
+Next recommended task: review and manually commit the local saved-actions
+overlay change.
 
 ## Explicitly Out Of Scope
 

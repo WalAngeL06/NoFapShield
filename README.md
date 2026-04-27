@@ -58,7 +58,9 @@ python -m shield.app --screen overlay
 ```
 
 The overlay is a local fullscreen friction screen with a 15-second countdown
-before action choices are shown.
+before action choices are shown. It uses locally saved alternative actions from
+settings/onboarding when available, and falls back to default action cards when
+none are saved.
 
 ## Morning Check-in
 
@@ -86,10 +88,10 @@ python -m shield.app --screen settings
 
 The settings screen edits a personal goal, locally saved alternative actions, an
 optional accountability email, and a detection-sensitivity preference. All
-values are stored locally in SQLite. Saved alternative actions are not wired
-into the pause overlay yet; that is planned future work. The email field is a
-local placeholder and is not sent anywhere in v0.1. The detection-sensitivity
-slider is also a placeholder; v0.1 has no detection.
+values are stored locally in SQLite. Saved alternative actions are used by the
+pause overlay when available. The email field is a local placeholder and is not
+sent anywhere in v0.1. The detection-sensitivity slider is also a placeholder;
+v0.1 has no detection.
 
 ## Onboarding
 
@@ -100,8 +102,8 @@ python -m shield.app --screen onboarding
 The onboarding screen is a local-only setup flow for a personal goal,
 alternative actions, and an optional accountability email placeholder. It saves
 values to local SQLite settings, including `onboarding_completed=true`. No email
-is sent in v0.1, and saved alternative actions are not wired into the pause
-overlay yet.
+is sent in v0.1. Saved alternative actions are used by the pause overlay when
+available.
 
 ## AI Workflow
 

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from PyQt6.QtCore import QElapsedTimer, QEvent, QRectF, Qt, QTimer, pyqtSignal
@@ -16,6 +18,7 @@ from PyQt6.QtWidgets import (
 
 COUNTDOWN_SECONDS = 15
 ACTIVITY_SECONDS = 120
+MAX_ACTION_CARDS = 3
 
 
 @dataclass(frozen=True)
@@ -29,11 +32,15 @@ ACTION_CARDS = (
     ActionCard("Su ic", "Bir bardak su"),
     ActionCard("Kisa yuruyus", "2 dakika hareket"),
 )
+DEFAULT_ALTERNATIVE_ACTIONS = tuple(card.title for card in ACTION_CARDS)
 
 _active_overlay_window: BlurOverlayWindow | None = None
 
 
-def run_overlay(countdown_seconds: int = COUNTDOWN_SECONDS) -> int:
+def run_overlay(
+    countdown_seconds: int = COUNTDOWN_SECONDS,
+    alternative_actions: Sequence[str] | None = None,
+) -> int:
     """Launch the overlay from the CLI or attach it to an existing Qt app.
 
     When no QApplication exists this function owns the event loop and returns
@@ -47,7 +54,10 @@ def run_overlay(countdown_seconds: int = COUNTDOWN_SECONDS) -> int:
     if app is None:
         app = QApplication([])
 
-    window = BlurOverlayWindow(countdown_seconds=countdown_seconds)
+    window = BlurOverlayWindow(
+        countdown_seconds=countdown_seconds,
+        alternative_actions=alternative_actions,
+    )
     _active_overlay_window = window
     window.destroyed.connect(lambda *_: _release_active_overlay(window))
     window.showFullScreen()
@@ -72,6 +82,7 @@ class BlurOverlayWindow(QWidget):
         self,
         countdown_seconds: int = COUNTDOWN_SECONDS,
         activity_seconds: int = ACTIVITY_SECONDS,
+        alternative_actions: Sequence[str] | None = None,
     ) -> None:
         super().__init__()
         if countdown_seconds <= 0:
@@ -83,6 +94,7 @@ class BlurOverlayWindow(QWidget):
         self.activity_seconds = activity_seconds
         self.allow_close = False
         self._activity_remaining = activity_seconds
+        self.action_cards = action_cards_for_alternative_actions(alternative_actions)
 
         self.setWindowTitle("Shield")
         self.setWindowFlags(
@@ -94,7 +106,7 @@ class BlurOverlayWindow(QWidget):
         self.setStyleSheet("background: #0a0a0a; color: #f8fafc;")
 
         self._countdown = CountdownRing(seconds=countdown_seconds)
-        self._choice_screen = ChoiceScreen(cards=ACTION_CARDS)
+        self._choice_screen = ChoiceScreen(cards=self.action_cards)
         self._activity_screen = ActivityScreen()
         self._activity_screen.set_remaining(activity_seconds)
 
@@ -166,6 +178,56 @@ class BlurOverlayWindow(QWidget):
 
     def _close_from_inside(self) -> None:
         self.request_internal_close()
+
+
+def normalize_alternative_actions(
+    value: object,
+    fallback: Sequence[str] = DEFAULT_ALTERNATIVE_ACTIONS,
+) -> list[str]:
+    actions: list[str] = []
+    for candidate in _action_candidates(value):
+        if not isinstance(candidate, str):
+            continue
+        text = candidate.strip()
+        if not text:
+            continue
+        actions.append(text)
+        if len(actions) >= MAX_ACTION_CARDS:
+            break
+    return actions if actions else list(fallback)
+
+
+def action_cards_for_alternative_actions(value: object) -> tuple[ActionCard, ...]:
+    actions = normalize_alternative_actions(value)
+    if actions == list(DEFAULT_ALTERNATIVE_ACTIONS):
+        return ACTION_CARDS
+    return tuple(
+        ActionCard(title=action, detail="2 dakika boyunca dene")
+        for action in actions
+    )
+
+
+def _action_candidates(value: object) -> Sequence[object]:
+    if value is None:
+        return ()
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return ()
+        if text.startswith(("[", "{")):
+            try:
+                decoded = json.loads(text)
+            except json.JSONDecodeError:
+                return ()
+            if isinstance(decoded, str):
+                return (decoded,)
+            if isinstance(decoded, Sequence):
+                return tuple(decoded)
+            return ()
+        return tuple(text.splitlines()) if "\n" in text else (text,)
+    if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray)):
+        return value
+    return ()
 
 
 class CountdownRing(QWidget):
