@@ -28,11 +28,15 @@ python -m pytest
 
 ```bash
 python -m shield.app --demo-trigger
+python -m shield.app --demo-trigger --show-overlay
 ```
 
 The demo trigger emits a synthetic friction event, records it through the local
 event store, and prints the event summary. By default the demo uses an in-memory
-database; pass `--db-path path/to/shield.db` to persist events.
+database; pass `--db-path path/to/shield.db` to persist events. The default
+demo trigger does not open the overlay. Add `--show-overlay` to record and print
+the same event summary, print `overlay=launched`, and then launch the pause
+overlay.
 
 ## Overlay
 
@@ -67,11 +71,12 @@ in the local SQLite database. No data leaves the device.
 python -m shield.app --screen settings
 ```
 
-The settings screen edits a personal goal, alternative actions for the pause
-overlay, an optional accountability email, and a detection-sensitivity
-preference. All values are stored locally in SQLite. The email field is a local
-placeholder and is not sent anywhere in v0.1. The detection-sensitivity slider
-is also a placeholder; v0.1 has no detection.
+The settings screen edits a personal goal, locally saved alternative actions, an
+optional accountability email, and a detection-sensitivity preference. All
+values are stored locally in SQLite. Saved alternative actions are not wired
+into the pause overlay yet; that is planned future work. The email field is a
+local placeholder and is not sent anywhere in v0.1. The detection-sensitivity
+slider is also a placeholder; v0.1 has no detection.
 
 ## AI Workflow
 

@@ -5,8 +5,11 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `61 passed`
-- Latest known product checkpoint: `78526cd feat: add local settings screen`
+- Tests passing: `63 passed`
+- Latest known committed product checkpoint:
+  `78526cd feat: add local settings screen`
+- Current local product change: `feat: wire manual demo trigger to overlay flow`
+  implemented locally; user controls Git writes.
 
 ## Completed Checkpoints
 
@@ -18,11 +21,13 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Wire manual demo trigger to overlay flow.
+
+- Status: implemented locally, not committed by the AI.
 
 ## Next Recommended Tasks
 
-1. Wire manual demo trigger to overlay flow.
+1. Review and manually commit the local demo-overlay flow change.
 2. Add onboarding.
 3. Later: optional local detection.
 4. Later: optional DNS/domain heuristics.

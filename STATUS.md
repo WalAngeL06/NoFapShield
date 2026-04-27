@@ -11,18 +11,24 @@ The repository is a clean v0.1 scaffold. It includes:
 - `shield.core.Orchestrator`
 - `shield.db.EventStore`
 - `python -m shield.app --demo-trigger`
+- `python -m shield.app --demo-trigger --show-overlay`
 - `python -m shield.app --screen overlay`
 - `python -m shield.app --screen checkin`
 - `python -m shield.app --screen dashboard`
 - `python -m shield.app --screen settings`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `61 passed`.
+Current tests: `63 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`) and local settings screen (`78526cd`).
 
-Next recommended product task: wire manual demo trigger to overlay flow.
+Current local product change: `--demo-trigger --show-overlay` records the demo
+event, prints the stable demo output plus `overlay=launched`, and delegates to
+the existing pause overlay runner. Default `--demo-trigger` still does not open
+the overlay.
+
+Next recommended product task after this change is reviewed: add onboarding.
 
 ## Explicitly Out Of Scope
 
@@ -44,13 +50,22 @@ Git write operations are user-controlled by default. AI agents should edit,
 test, and report unless the user explicitly authorizes Git writes in the same
 message.
 
-## Verification
+## Automated Verification
 
 Run:
 
 ```bash
 python -m pytest
 python -m shield.app --demo-trigger
+```
+
+## Manual UI Checks
+
+These commands open PyQt6 windows or fullscreen UI. They are manual checks, not
+automated test commands.
+
+```bash
+python -m shield.app --demo-trigger --show-overlay
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard

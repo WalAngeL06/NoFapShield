@@ -30,11 +30,17 @@ old root-level architecture.
 
 ```bash
 python -m shield.app --demo-trigger
+python -m shield.app --demo-trigger --show-overlay
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
 python -m shield.app --screen settings
 ```
+
+`--demo-trigger` records and prints a synthetic friction event without opening
+UI by default. `--demo-trigger --show-overlay` records and prints the same event,
+then delegates to the existing PyQt6 overlay runner. The separate
+`--screen overlay` command remains unchanged.
 
 ## Explicitly Forbidden Current Architecture
 

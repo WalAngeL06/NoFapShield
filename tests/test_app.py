@@ -3,6 +3,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from shield.app import main
 from shield.db import EventStore
 
@@ -17,8 +19,15 @@ def _parse_output(output: str) -> dict[str, str]:
     return parsed
 
 
-def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys):
+def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys, monkeypatch):
     db_path = tmp_path / "demo.db"
+    overlay_calls: list[None] = []
+
+    def fake_overlay() -> int:
+        overlay_calls.append(None)
+        return 0
+
+    monkeypatch.setattr("shield.app._run_overlay_screen", fake_overlay)
 
     result = main(["--demo-trigger", "--db-path", str(db_path)])
 
@@ -31,6 +40,8 @@ def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys):
     assert parsed["score"] == "1.00"
     assert parsed["threshold"] == "0.70"
     assert parsed["session_id"]
+    assert "overlay" not in parsed
+    assert overlay_calls == []
 
     store = EventStore(db_path)
     assert store.count_events() == 1
@@ -40,6 +51,46 @@ def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys):
     assert row["reason"] == parsed["reason"]
     assert row["score"] == float(parsed["score"])
     assert row["threshold"] == float(parsed["threshold"])
+
+
+def test_demo_trigger_show_overlay_records_event_and_delegates(tmp_path, capsys, monkeypatch):
+    db_path = tmp_path / "demo.db"
+    overlay_calls: list[None] = []
+
+    def fake_overlay() -> int:
+        overlay_calls.append(None)
+        return 17
+
+    monkeypatch.setattr("shield.app._run_overlay_screen", fake_overlay)
+
+    result = main(["--demo-trigger", "--show-overlay", "--db-path", str(db_path)])
+
+    output = capsys.readouterr().out
+    parsed = _parse_output(output)
+    assert result == 17
+    assert parsed["shield.demo_trigger"] == "ok"
+    assert parsed["source"] == "demo"
+    assert parsed["reason"] == "manual demo trigger"
+    assert parsed["score"] == "1.00"
+    assert parsed["threshold"] == "0.70"
+    assert parsed["session_id"]
+    assert parsed["overlay"] == "launched"
+    assert overlay_calls == [None]
+
+    store = EventStore(db_path)
+    assert store.count_events() == 1
+    row = store.list_events()[0]
+    assert row["session_id"] == parsed["session_id"]
+    assert row["source"] == parsed["source"]
+    assert row["reason"] == parsed["reason"]
+
+
+def test_show_overlay_without_demo_trigger_errors(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--show-overlay"])
+
+    assert exc.value.code == 2
+    assert "--show-overlay requires --demo-trigger" in capsys.readouterr().err
 
 
 def test_cli_without_command_prints_help(capsys):

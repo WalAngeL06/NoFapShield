@@ -5,8 +5,11 @@ This is the fast-start summary for the next AI assistant.
 ## Last Known State
 
 - Last known branch: `rebuild/v0-clean`
-- Latest known product checkpoint: `78526cd feat: add local settings screen`
-- Current tests: `61 passed`
+- Latest known committed product checkpoint:
+  `78526cd feat: add local settings screen`
+- Current local product change: `feat: wire manual demo trigger to overlay flow`
+  implemented locally; user controls Git writes.
+- Current tests: `63 passed`
 
 ## What Exists Now
 
@@ -15,6 +18,7 @@ This is the fast-start summary for the next AI assistant.
 - PyQt6 morning check-in (`--screen checkin`)
 - PyQt6 read-only dashboard (`--screen dashboard`)
 - PyQt6 local-only settings (`--screen settings`)
+- explicit demo overlay flow (`--demo-trigger --show-overlay`) in local changes
 - local SQLite event/check-in/settings store
 
 ## What Is Not Present
@@ -28,7 +32,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Wire the manual demo trigger to the overlay flow so saved alternative actions appear on the pause screen.
+Review and manually commit the local demo-overlay flow change. After that, add onboarding.
 
 ## Handoff Protocol
 
@@ -59,3 +63,4 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - Docs/process changeset: add durable AI project memory docs.
 - `6f50b55 feat: add read-only dashboard`
 - `78526cd feat: add local settings screen`
+- Local, uncommitted: `feat: wire manual demo trigger to overlay flow`
