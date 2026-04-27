@@ -6,23 +6,23 @@ This file is the single source of truth for current and next work.
 
 - Working branch: `rebuild/v0-clean`
 - Tests passing: `61 passed`
-- Latest known product checkpoint: settings screen (pending commit)
+- Latest known product checkpoint: `78526cd feat: add local settings screen`
 
 ## Completed Checkpoints
 
 - `69b001c chore: rebuild clean v0.1 scaffold`
 - `99a0a4a feat: add PyQt6 pause overlay`
 - `1aed822 feat: add morning check-in screen`
-- (pending) feat: add read-only dashboard screen
-- (pending) feat: add local-only settings screen
+- `6f50b55 feat: add read-only dashboard`
+- `78526cd feat: add local settings screen`
 
 ## Current Task
 
-No active task. Settings delivered; awaiting user commit.
+No active task.
 
 ## Next Recommended Tasks
 
-1. Wire manual demo trigger to overlay flow (use saved alternative actions).
+1. Wire manual demo trigger to overlay flow.
 2. Add onboarding.
 3. Later: optional local detection.
 4. Later: optional DNS/domain heuristics.

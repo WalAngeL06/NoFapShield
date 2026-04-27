@@ -17,6 +17,13 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen settings`
 - durable AI project memory docs for handoff and process continuity
 
+Current tests: `61 passed`.
+
+Completed product checkpoints include the committed read-only dashboard
+(`6f50b55`) and local settings screen (`78526cd`).
+
+Next recommended product task: wire manual demo trigger to overlay flow.
+
 ## Explicitly Out Of Scope
 
 - content classification

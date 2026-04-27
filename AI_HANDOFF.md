@@ -5,7 +5,7 @@ This is the fast-start summary for the next AI assistant.
 ## Last Known State
 
 - Last known branch: `rebuild/v0-clean`
-- Latest known product checkpoint: settings screen (pending commit after `1aed822`)
+- Latest known product checkpoint: `78526cd feat: add local settings screen`
 - Current tests: `61 passed`
 
 ## What Exists Now
@@ -57,5 +57,5 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `99a0a4a feat: add PyQt6 pause overlay`
 - `1aed822 feat: add morning check-in screen`
 - Docs/process changeset: add durable AI project memory docs.
-- (pending) feat: add read-only dashboard screen
-- (pending) feat: add local-only settings screen
+- `6f50b55 feat: add read-only dashboard`
+- `78526cd feat: add local settings screen`
