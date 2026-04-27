@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from datetime import date
+from datetime import date, datetime
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont
@@ -141,8 +141,11 @@ class DashboardWindow(QWidget):
         row = QHBoxLayout()
         row.setSpacing(16)
 
-        today_iso = date.today().isoformat()
-        has_today = any(entry["created_at"][:10] == today_iso for entry in checkins)
+        today = date.today()
+        has_today = any(
+            _created_at_matches_date(entry.get("created_at"), today)
+            for entry in checkins
+        )
         today_text = "✓ Yapıldı" if has_today else "—"
 
         self._today_status_label = _add_card(row, "Bugün Check-in", today_text)
@@ -222,6 +225,35 @@ def _add_card(parent: QHBoxLayout, title: str, value: str) -> QLabel:
 
     parent.addWidget(card)
     return value_label
+
+
+def _created_at_matches_date(value: object, target_date: date) -> bool:
+    parsed_date = _local_date_from_iso(value)
+    return parsed_date == target_date
+
+
+def _local_date_from_iso(value: object) -> date | None:
+    if not isinstance(value, str):
+        return None
+
+    text = value.strip()
+    if not text:
+        return None
+
+    if len(text) == 10:
+        try:
+            return date.fromisoformat(text)
+        except ValueError:
+            return None
+
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+    if parsed.tzinfo is not None:
+        parsed = parsed.astimezone()
+    return parsed.date()
 
 
 def _font(size: int, weight: QFont.Weight = QFont.Weight.Normal) -> QFont:
