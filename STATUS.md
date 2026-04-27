@@ -24,8 +24,8 @@ Current tests: `80 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
-(`19ec0c8`), and onboarding (`caa9356`). The latest known fix is
-`9753375 fix: recognize today's dashboard checkin`.
+(`19ec0c8`), onboarding (`caa9356`), and default startup flow (`d9ce5d4`).
+The latest known fix is `9753375 fix: recognize today's dashboard checkin`.
 
 `--demo-trigger --show-overlay` is current committed functionality. It records
 the demo event, prints the stable demo output plus `overlay=launched`, and
@@ -37,12 +37,11 @@ local-only PyQt6 setup flow for a personal goal, alternative actions, optional
 local email placeholder, and `onboarding_completed=true`. No email is sent in
 v0.1. Saved alternative actions are not wired into the pause overlay yet.
 
-Current local product change: bare `python -m shield.app` now reads local
+Bare `python -m shield.app` is current committed functionality. It reads local
 `onboarding_completed` state and routes to dashboard when complete or onboarding
 when missing, false, malformed, or unreadable.
 
-Next recommended task: review and manually commit the local default startup flow
-change.
+Next recommended product task: use saved alternative actions in overlay.
 
 ## Explicitly Out Of Scope
 

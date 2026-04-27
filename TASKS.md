@@ -7,11 +7,9 @@ This file is the single source of truth for current and next work.
 - Working branch: `rebuild/v0-clean`
 - Tests passing: `80 passed`
 - Latest known committed product checkpoint:
-  `caa9356 feat: add onboarding`
+  `d9ce5d4 feat: add default startup flow`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
-- Current local product change: `feat: add default app startup flow`
-  implemented locally; user controls Git writes.
 
 ## Completed Checkpoints
 
@@ -23,16 +21,15 @@ This file is the single source of truth for current and next work.
 - `19ec0c8 feat: wire demo trigger to overlay flow`
 - `caa9356 feat: add onboarding`
 - `9753375 fix: recognize today's dashboard checkin`
+- `d9ce5d4 feat: add default startup flow`
 
 ## Current Task
 
-Add default app startup flow.
-
-- Status: implemented locally, not committed by the AI.
+No active task.
 
 ## Next Recommended Tasks
 
-1. Review and manually commit the local default startup flow change.
+1. Use saved alternative actions in overlay.
 2. Later: optional local detection.
 3. Later: optional DNS/domain heuristics.
 4. Later: installer/release packaging.
