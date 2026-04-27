@@ -1,6 +1,6 @@
 # Project Status - Shield v0.1
 
-_Last updated: 2026-04-27_
+_Last updated: 2026-04-28_
 
 ## Current Scope
 
@@ -22,20 +22,21 @@ The repository is a clean v0.1 scaffold. It includes:
 Current tests: `72 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
-(`6f50b55`), local settings screen (`78526cd`), and demo-overlay flow
-(`19ec0c8`).
+(`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
+(`19ec0c8`), and onboarding (`caa9356`). The latest known fix is
+`9753375 fix: recognize today's dashboard checkin`.
 
 `--demo-trigger --show-overlay` is current committed functionality. It records
 the demo event, prints the stable demo output plus `overlay=launched`, and
 delegates to the existing pause overlay runner. Default `--demo-trigger` still
 does not open the overlay.
 
-Current local product change: `--screen onboarding` adds a local-only PyQt6
-setup flow for a personal goal, alternative actions, optional local email
-placeholder, and `onboarding_completed=true`. No email is sent in v0.1. Saved
-alternative actions are not wired into the pause overlay yet.
+`--screen onboarding` is current committed functionality. It provides a
+local-only PyQt6 setup flow for a personal goal, alternative actions, optional
+local email placeholder, and `onboarding_completed=true`. No email is sent in
+v0.1. Saved alternative actions are not wired into the pause overlay yet.
 
-Next recommended task: review and manually commit the local onboarding change.
+Next recommended product task: add default app startup flow.
 
 ## Explicitly Out Of Scope
 
