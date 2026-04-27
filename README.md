@@ -13,6 +13,7 @@ This version intentionally contains only the project spine:
 - a read-only local dashboard screen
 - a local-only settings screen
 - a local-only onboarding screen
+- a local default startup flow
 
 The v0.1 scaffold does not include content classification, network interception,
 screenshot capture, Windows service management, uninstall protection, email
@@ -25,6 +26,16 @@ sending, SMTP/accountability delivery, or a full desktop UI. The optional
 pip install -e ".[dev]"
 python -m pytest
 ```
+
+## Default Startup
+
+```bash
+python -m shield.app
+```
+
+With no explicit command, Shield reads the local `onboarding_completed` setting.
+If onboarding is complete, it opens the dashboard. Otherwise, it opens
+onboarding. This routing is local-only.
 
 ## Demo Trigger
 

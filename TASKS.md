@@ -5,11 +5,13 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `72 passed`
+- Tests passing: `80 passed`
 - Latest known committed product checkpoint:
   `caa9356 feat: add onboarding`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
+- Current local product change: `feat: add default app startup flow`
+  implemented locally; user controls Git writes.
 
 ## Completed Checkpoints
 
@@ -24,11 +26,13 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Add default app startup flow.
+
+- Status: implemented locally, not committed by the AI.
 
 ## Next Recommended Tasks
 
-1. Add default app startup flow.
+1. Review and manually commit the local default startup flow change.
 2. Later: optional local detection.
 3. Later: optional DNS/domain heuristics.
 4. Later: installer/release packaging.

@@ -9,7 +9,9 @@ This is the fast-start summary for the next AI assistant.
   `caa9356 feat: add onboarding`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
-- Current tests: `72 passed`
+- Current local product change: `feat: add default app startup flow`
+  implemented locally; user controls Git writes.
+- Current tests: `80 passed`
 
 ## What Exists Now
 
@@ -20,6 +22,7 @@ This is the fast-start summary for the next AI assistant.
 - PyQt6 local-only settings (`--screen settings`)
 - explicit demo overlay flow (`--demo-trigger --show-overlay`)
 - PyQt6 local-only onboarding (`--screen onboarding`)
+- default startup routing (`python -m shield.app`) in local changes
 - local SQLite event/check-in/settings store
 
 ## What Is Not Present
@@ -32,7 +35,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Add default app startup flow.
+Review and manually commit the local default startup flow change.
 
 ## Handoff Protocol
 
@@ -66,3 +69,4 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `19ec0c8 feat: wire demo trigger to overlay flow`
 - `caa9356 feat: add onboarding`
 - `9753375 fix: recognize today's dashboard checkin`
+- Local, uncommitted: `feat: add default app startup flow`

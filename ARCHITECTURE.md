@@ -10,7 +10,7 @@ old root-level architecture.
 
 - `src/shield/app.py`
   - CLI entrypoint.
-  - Dispatches supported demo and UI commands.
+  - Dispatches default startup, supported demo commands, and UI commands.
 - `src/shield/core/`
   - Lightweight dataclasses, config, and orchestration helpers.
   - Contains `Config`, `FrictionEvent`, trigger source types, and
@@ -30,6 +30,7 @@ old root-level architecture.
 ## Supported Commands
 
 ```bash
+python -m shield.app
 python -m shield.app --demo-trigger
 python -m shield.app --demo-trigger --show-overlay
 python -m shield.app --screen overlay
@@ -38,6 +39,11 @@ python -m shield.app --screen dashboard
 python -m shield.app --screen settings
 python -m shield.app --screen onboarding
 ```
+
+With no explicit command, `python -m shield.app` reads the local
+`onboarding_completed` setting from the SQLite settings store. Completed values
+route to the dashboard; missing, false, malformed, or unreadable values route to
+onboarding.
 
 `--demo-trigger` records and prints a synthetic friction event without opening
 UI by default. `--demo-trigger --show-overlay` records and prints the same event,

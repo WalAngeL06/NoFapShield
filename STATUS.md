@@ -10,6 +10,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `shield.core.FrictionEvent`
 - `shield.core.Orchestrator`
 - `shield.db.EventStore`
+- `python -m shield.app`
 - `python -m shield.app --demo-trigger`
 - `python -m shield.app --demo-trigger --show-overlay`
 - `python -m shield.app --screen overlay`
@@ -19,7 +20,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `72 passed`.
+Current tests: `80 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
@@ -36,7 +37,12 @@ local-only PyQt6 setup flow for a personal goal, alternative actions, optional
 local email placeholder, and `onboarding_completed=true`. No email is sent in
 v0.1. Saved alternative actions are not wired into the pause overlay yet.
 
-Next recommended product task: add default app startup flow.
+Current local product change: bare `python -m shield.app` now reads local
+`onboarding_completed` state and routes to dashboard when complete or onboarding
+when missing, false, malformed, or unreadable.
+
+Next recommended task: review and manually commit the local default startup flow
+change.
 
 ## Explicitly Out Of Scope
 
@@ -73,6 +79,7 @@ These commands open PyQt6 windows or fullscreen UI. They are manual checks, not
 automated test commands.
 
 ```bash
+python -m shield.app
 python -m shield.app --demo-trigger --show-overlay
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin

@@ -63,6 +63,31 @@ def _run_onboarding_screen(db_path: str | None = None) -> int:
     return run_onboarding(db_path=db_path)
 
 
+def _run_default_screen(db_path: str) -> int:
+    if _is_onboarding_completed(db_path):
+        return _run_dashboard_screen(db_path)
+    return _run_onboarding_screen(db_path)
+
+
+def _is_onboarding_completed(db_path: str) -> bool:
+    try:
+        with EventStore(db_path) as store:
+            value = store.get_setting("onboarding_completed", False)
+    except Exception:
+        return False
+    return _is_completed_setting(value)
+
+
+def _is_completed_setting(value: object) -> bool:
+    if value is True:
+        return True
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value == 1
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1"}
+    return False
+
+
 def _print_demo_event(event: FrictionEvent) -> None:
     print("shield.demo_trigger=ok")
     print(f"session_id={event.session_id}")
@@ -111,8 +136,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.demo_trigger:
         return _run_demo_trigger(config=config, db_path=db_path, show_overlay=args.show_overlay)
 
-    parser.print_help()
-    return 0
+    return _run_default_screen(db_path)
 
 
 if __name__ == "__main__":

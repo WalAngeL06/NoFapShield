@@ -19,15 +19,36 @@ def _parse_output(output: str) -> dict[str, str]:
     return parsed
 
 
+def _patch_default_screen_delegates(monkeypatch) -> list[tuple[str, str]]:
+    calls: list[tuple[str, str]] = []
+
+    def fake_dashboard(db_path: str) -> int:
+        calls.append(("dashboard", db_path))
+        return 41
+
+    def fake_onboarding(db_path: str) -> int:
+        calls.append(("onboarding", db_path))
+        return 67
+
+    monkeypatch.setattr("shield.app._run_dashboard_screen", fake_dashboard)
+    monkeypatch.setattr("shield.app._run_onboarding_screen", fake_onboarding)
+    return calls
+
+
 def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys, monkeypatch):
     db_path = tmp_path / "demo.db"
     overlay_calls: list[None] = []
+    default_calls: list[None] = []
 
     def fake_overlay() -> int:
         overlay_calls.append(None)
         return 0
 
     monkeypatch.setattr("shield.app._run_overlay_screen", fake_overlay)
+    monkeypatch.setattr(
+        "shield.app._run_default_screen",
+        lambda db_path: default_calls.append(None) or 99,
+    )
 
     result = main(["--demo-trigger", "--db-path", str(db_path)])
 
@@ -42,6 +63,7 @@ def test_demo_trigger_cli_prints_event_summary(tmp_path, capsys, monkeypatch):
     assert parsed["session_id"]
     assert "overlay" not in parsed
     assert overlay_calls == []
+    assert default_calls == []
 
     store = EventStore(db_path)
     assert store.count_events() == 1
@@ -93,12 +115,70 @@ def test_show_overlay_without_demo_trigger_errors(capsys):
     assert "--show-overlay requires --demo-trigger" in capsys.readouterr().err
 
 
-def test_cli_without_command_prints_help(capsys):
-    result = main([])
+def test_default_startup_without_completion_delegates_to_onboarding(tmp_path, monkeypatch):
+    db_path = tmp_path / "settings.db"
+    calls = _patch_default_screen_delegates(monkeypatch)
 
-    output = capsys.readouterr().out
-    assert result == 0
-    assert "--demo-trigger" in output
+    result = main(["--db-path", str(db_path)])
+
+    assert result == 67
+    assert calls == [("onboarding", str(db_path))]
+
+
+def test_default_startup_with_false_completion_delegates_to_onboarding(tmp_path, monkeypatch):
+    db_path = tmp_path / "settings.db"
+    with EventStore(db_path) as store:
+        store.set_setting("onboarding_completed", False)
+    calls = _patch_default_screen_delegates(monkeypatch)
+
+    result = main(["--db-path", str(db_path)])
+
+    assert result == 67
+    assert calls == [("onboarding", str(db_path))]
+
+
+@pytest.mark.parametrize("completed_value", [True, "true", "True", "1", 1])
+def test_default_startup_with_completed_value_delegates_to_dashboard(
+    tmp_path,
+    monkeypatch,
+    completed_value,
+):
+    db_path = tmp_path / "settings.db"
+    with EventStore(db_path) as store:
+        store.set_setting("onboarding_completed", completed_value)
+    calls = _patch_default_screen_delegates(monkeypatch)
+
+    result = main(["--db-path", str(db_path)])
+
+    assert result == 41
+    assert calls == [("dashboard", str(db_path))]
+
+
+def test_default_startup_with_malformed_completion_delegates_to_onboarding(tmp_path, monkeypatch):
+    db_path = tmp_path / "settings.db"
+    with EventStore(db_path) as store:
+        store.set_setting("onboarding_completed", {"completed": True})
+    calls = _patch_default_screen_delegates(monkeypatch)
+
+    result = main(["--db-path", str(db_path)])
+
+    assert result == 67
+    assert calls == [("onboarding", str(db_path))]
+
+
+def test_default_startup_when_settings_read_fails_delegates_to_onboarding(monkeypatch):
+    class BrokenStore:
+        def __init__(self, db_path: str) -> None:
+            del db_path
+            raise RuntimeError("settings unavailable")
+
+    calls = _patch_default_screen_delegates(monkeypatch)
+    monkeypatch.setattr("shield.app.EventStore", BrokenStore)
+
+    result = main(["--db-path", "unreadable.db"])
+
+    assert result == 67
+    assert calls == [("onboarding", "unreadable.db")]
 
 
 def test_overlay_screen_delegates_to_ui(monkeypatch):
