@@ -48,7 +48,33 @@ Overlay launch paths read local
 overlay. Missing, empty, malformed, or unreadable actions fall back to default
 action cards.
 
-Next recommended product task: manual UI smoke test.
+Manual UI smoke test: `PASS` with non-blocking polish notes.
+
+Checked:
+
+- `python -m shield.app`
+- `python -m shield.app --screen onboarding`
+- `python -m shield.app --screen dashboard`
+- `python -m shield.app --screen settings`
+- `python -m shield.app --screen checkin`
+- `python -m shield.app --demo-trigger --show-overlay`
+
+Observed:
+
+- onboarding opens, transitions between steps, and closes after save
+- default startup routes to dashboard after onboarding completion
+- dashboard, settings, check-in, and overlay open
+- saved alternative actions are wired into overlay launch paths
+- no P0 blocker found
+
+Known non-blocking polish notes:
+
+- onboarding step 3 spacing feels too spread out
+- settings is functional but visually dense/amateur
+- dashboard is functional but could be more polished
+- overall UI needs visual polish later, but this does not block v0.1 alpha
+
+Next recommended product task: README/release polish for v0.1 alpha.
 
 ## Explicitly Out Of Scope
 

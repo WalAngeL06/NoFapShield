@@ -34,7 +34,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Manual UI smoke test.
+README/release polish for v0.1 alpha.
 
 ## Handoff Protocol
 
@@ -70,3 +70,31 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `9753375 fix: recognize today's dashboard checkin`
 - `d9ce5d4 feat: add default startup flow`
 - `223105a feat: use saved alternative actions in overlay`
+- Manual UI smoke test: `PASS`; no P0 blocker found.
+
+## Manual UI Smoke Notes
+
+Checked:
+
+- `python -m shield.app`
+- `python -m shield.app --screen onboarding`
+- `python -m shield.app --screen dashboard`
+- `python -m shield.app --screen settings`
+- `python -m shield.app --screen checkin`
+- `python -m shield.app --demo-trigger --show-overlay`
+
+Observed:
+
+- onboarding opens, transitions between steps, and closes after save
+- default startup routes to dashboard after onboarding completion
+- dashboard, settings, check-in, and overlay open
+- saved alternative actions are wired into overlay launch paths
+- no P0 blocker found
+
+Known non-blocking polish notes:
+
+- onboarding step 3 spacing feels too spread out
+- settings is functional but visually dense/amateur
+- dashboard is functional but could be more polished
+- overall UI needs visual polish later; this is not a v0.1 alpha release
+  blocker

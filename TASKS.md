@@ -23,6 +23,7 @@ This file is the single source of truth for current and next work.
 - `9753375 fix: recognize today's dashboard checkin`
 - `d9ce5d4 feat: add default startup flow`
 - `223105a feat: use saved alternative actions in overlay`
+- Manual UI smoke test: `PASS` with non-blocking polish notes.
 
 ## Current Task
 
@@ -30,10 +31,18 @@ No active task.
 
 ## Next Recommended Tasks
 
-1. Manual UI smoke test.
+1. README/release polish for v0.1 alpha.
 2. Later: optional local detection.
 3. Later: optional DNS/domain heuristics.
 4. Later: installer/release packaging.
+
+## Known Non-Blocking Polish Notes
+
+- Onboarding step 3 spacing feels too spread out.
+- Settings is functional but visually dense/amateur.
+- Dashboard is functional but could be more polished.
+- Overall UI needs visual polish later; this is not a v0.1 alpha release
+  blocker.
 
 ## Rules For Updating This File
 
