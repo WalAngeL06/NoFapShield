@@ -1,61 +1,56 @@
 import json
+
 import pytest
-from pathlib import Path
+
 from shield.core.config import Config
 
 
-def test_default_threshold():
+def test_defaults_are_v01_scaffold_values():
     config = Config()
-    assert config.detection_threshold == 0.7
+
+    assert config.trigger_threshold == 0.7
+    assert config.demo_score == 1.0
+    assert config.friction_delay_seconds == 15
+    assert config.db_path == ":memory:"
 
 
-def test_default_screenshot_interval():
-    config = Config()
-    assert config.screenshot_interval == 3
+def test_load_from_file_ignores_unknown_keys(tmp_path):
+    path = tmp_path / "settings.json"
+    path.write_text(
+        json.dumps({"trigger_threshold": 0.5, "future_key": "ignored"}),
+        encoding="utf-8",
+    )
 
+    config = Config.from_file(path)
 
-def test_load_from_file(tmp_path):
-    settings = {"detection_threshold": 0.5, "screenshot_interval": 5}
-    f = tmp_path / "settings.json"
-    f.write_text(json.dumps(settings))
-    config = Config.from_file(f)
-    assert config.detection_threshold == 0.5
-    assert config.screenshot_interval == 5
-
-
-def test_save_to_file(tmp_path):
-    config = Config(detection_threshold=0.8)
-    f = tmp_path / "settings.json"
-    config.save(f)
-    data = json.loads(f.read_text())
-    assert data["detection_threshold"] == 0.8
-
-
-def test_missing_file_uses_defaults(tmp_path):
-    config = Config.from_file(tmp_path / "nonexistent.json")
-    assert config.detection_threshold == 0.7
+    assert config.trigger_threshold == 0.5
+    assert not hasattr(config, "future_key")
 
 
 def test_invalid_json_uses_defaults(tmp_path):
-    f = tmp_path / "bad.json"
-    f.write_text("not valid json {{{")
-    config = Config.from_file(f)
-    assert config.detection_threshold == 0.7
+    path = tmp_path / "bad.json"
+    path.write_text("{bad json", encoding="utf-8")
+
+    assert Config.from_file(path) == Config()
 
 
-def test_unknown_keys_ignored(tmp_path):
-    settings = {"detection_threshold": 0.6, "unknown_key": "ignored"}
-    f = tmp_path / "settings.json"
-    f.write_text(json.dumps(settings))
-    config = Config.from_file(f)
-    assert config.detection_threshold == 0.6
+def test_save_roundtrip(tmp_path):
+    original = Config(
+        trigger_threshold=0.6,
+        demo_score=0.9,
+        friction_delay_seconds=20,
+        db_path=str(tmp_path / "shield.db"),
+    )
+    path = tmp_path / "settings.json"
+
+    original.save(path)
+
+    assert Config.from_file(path) == original
 
 
-def test_roundtrip(tmp_path):
-    original = Config(detection_threshold=0.6, screenshot_interval=5, dns_score_ttl=15)
-    f = tmp_path / "settings.json"
-    original.save(f)
-    loaded = Config.from_file(f)
-    assert loaded.detection_threshold == 0.6
-    assert loaded.screenshot_interval == 5
-    assert loaded.dns_score_ttl == 15
+def test_probability_fields_are_validated():
+    with pytest.raises(ValueError, match="trigger_threshold"):
+        Config(trigger_threshold=1.5)
+
+    with pytest.raises(ValueError, match="demo_score"):
+        Config(demo_score=-0.1)
