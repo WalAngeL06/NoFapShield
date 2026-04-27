@@ -21,14 +21,15 @@ The repository is a clean v0.1 scaffold. It includes:
 Current tests: `63 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
-(`6f50b55`) and local settings screen (`78526cd`).
+(`6f50b55`), local settings screen (`78526cd`), and demo-overlay flow
+(`19ec0c8`).
 
-Current local product change: `--demo-trigger --show-overlay` records the demo
-event, prints the stable demo output plus `overlay=launched`, and delegates to
-the existing pause overlay runner. Default `--demo-trigger` still does not open
-the overlay.
+`--demo-trigger --show-overlay` is current committed functionality. It records
+the demo event, prints the stable demo output plus `overlay=launched`, and
+delegates to the existing pause overlay runner. Default `--demo-trigger` still
+does not open the overlay.
 
-Next recommended product task after this change is reviewed: add onboarding.
+Next recommended product task: add onboarding.
 
 ## Explicitly Out Of Scope
 
