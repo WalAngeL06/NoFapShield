@@ -128,3 +128,24 @@ changed, add a new decision entry and reference the old decision.
 - Do not delete old decisions to make history look cleaner.
 - New agents can understand both the original rationale and later changes.
 
+## Decision 007: Git Write Operations Are User-Controlled
+
+- Status: Accepted
+- Date: 2026-04-27
+
+### Context
+
+AI agents caused friction by entering commit/rebase flows and encountering
+identity, permission, and conflict-resolution issues.
+
+### Decision
+
+AI agents do not perform Git write operations by default.
+
+### Consequences
+
+- The user controls commits and pushes.
+- Agents edit files, run tests, and report results unless explicitly asked in
+  the same message to perform Git write operations.
+- Read-only Git commands such as `git status`, `git diff`, `git log`, and
+  `git branch --show-current` remain acceptable for inspection.

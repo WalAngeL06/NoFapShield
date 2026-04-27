@@ -37,6 +37,9 @@ No active product task after the documentation/process changeset.
 - Move the next task forward.
 - Add blockers or risks when discovered.
 - Do not leave a stale current task after finishing work.
+- Git operations are user-controlled.
+- Future AI agents should not run Git write operations unless explicitly
+  requested.
 - If code, architecture, scope, commands, constraints, or project direction
   changed, update the relevant memory docs in the same task before reporting
   completion.

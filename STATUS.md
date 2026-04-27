@@ -31,6 +31,10 @@ Project memory docs are now part of the workflow. AI agents must read them
 before making changes and update the relevant docs after changing code,
 architecture, scope, commands, constraints, or project direction.
 
+Git write operations are user-controlled by default. AI agents should edit,
+test, and report unless the user explicitly authorizes Git writes in the same
+message.
+
 ## Verification
 
 Run:

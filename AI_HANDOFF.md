@@ -40,6 +40,10 @@ Add a lightweight dashboard read-only view.
 4. Run tests before and after changes when relevant.
 5. Update memory docs if changing the project.
 6. Do not commit without approval.
+7. Do not run `git add`, `git commit`, `git push`, `git rebase`,
+   `git checkout`, or `git reset` by default.
+8. Ask the user to handle Git writes manually.
+9. Only use read-only Git commands unless explicitly authorized.
 
 If you changed code, architecture, scope, commands, constraints, or project
 direction, update the relevant memory docs in the same task before reporting

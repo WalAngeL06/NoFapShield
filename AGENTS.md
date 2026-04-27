@@ -41,6 +41,26 @@ tells you to proceed.
 - Do not commit unless the user explicitly approves.
 - Tests must pass before proposing or making a commit.
 
+### Git Operation Rules
+
+- AI agents must not run Git write operations unless the user explicitly asks in
+  the same message.
+- Default rule: no `git add`, `git commit`, `git push`, `git rebase`,
+  `git checkout`, `git reset`, or `git clean`.
+- AI agents may run read-only Git commands:
+  - `git status`
+  - `git diff`
+  - `git log`
+  - `git branch --show-current`
+- The preferred workflow is:
+  1. AI edits files.
+  2. AI runs tests.
+  3. AI reports diff summary.
+  4. User reviews.
+  5. User performs `git add`, `git commit`, and `git push` manually.
+- If an AI accidentally enters a rebase/conflict state, it must stop and ask the
+  user instead of trying to fix Git history automatically.
+
 ## Current Project Direction
 
 Shield is being rebuilt as a small, privacy-first, local-only Windows desktop
@@ -142,4 +162,3 @@ At completion, report:
 - commit hash if committed
 - what should be done next
 - whether the working tree is clean
-
