@@ -49,3 +49,10 @@ python -m shield.app --screen checkin
 
 The morning check-in stores the user's note in the configured local SQLite
 database only.
+
+## AI Workflow
+
+AI contributors must read `AGENTS.md` and `AI_HANDOFF.md` before changing the
+project. If an AI changes code, architecture, scope, commands, constraints, or
+project direction, it must update the relevant memory docs before reporting
+completion.

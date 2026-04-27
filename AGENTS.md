@@ -1,10 +1,13 @@
-# AGENTS.md — Shield AI Contributor Rules
+# AGENTS.md - Shield AI Contributor Rules
 
-This repository is often edited with AI coding agents such as Codex, Claude, Gemini, or ChatGPT. The goal of this file is to make every agent operate from the same project memory instead of relying on chat history.
+This repository is often edited with AI coding agents such as Codex, Claude,
+Gemini, ChatGPT, Copilot, and other tools. The goal of this file is to make
+every agent operate from the same project memory instead of relying on chat
+history.
 
-## Required first step for every AI agent
+## Required Reading Before Changes
 
-Before editing files, read these files in order:
+Before making changes, read these files in order:
 
 1. `AGENTS.md`
 2. `STATUS.md`
@@ -14,64 +17,82 @@ Before editing files, read these files in order:
 6. `AI_HANDOFF.md`
 7. `README.md`
 
-Then summarize:
+If any file is missing, note that as a project health issue and recreate or
+repair it as part of the current task when appropriate.
 
-- current branch and milestone
-- current architecture
-- current task
-- files allowed to change
-- files or features that are explicitly forbidden
-- test command
+## First Response From A New AI
 
-Do not edit files until the user approves the summarized plan.
+The first response from a new AI assistant should summarize:
 
-## Branch rule
+1. current architecture
+2. current milestone
+3. forbidden changes
+4. current task
+5. test command
 
-Work on `rebuild/v0-clean` unless the user explicitly says otherwise.
+Do not edit files before confirming understanding unless the user explicitly
+tells you to proceed.
 
-Never modify `main` directly.
+## Branch And Commit Rules
 
-## Current project direction
+- Work only on the branch requested by the user.
+- Current active branch for v0.1 work: `rebuild/v0-clean`.
+- Do not modify `main`.
+- Do not commit unless the user explicitly approves.
+- Tests must pass before proposing or making a commit.
 
-Shield is being rebuilt as a small, privacy-first, local-only Windows desktop app. v0.1 focuses on a calm pause layer and local check-ins, not heavy detection or system protection.
+## Current Project Direction
 
-## Forbidden unless explicitly requested
+Shield is being rebuilt as a small, privacy-first, local-only Windows desktop
+app. v0.1 focuses on a calm pause layer and local check-ins, not heavy detection
+or system protection.
 
-Do not add or reintroduce any of the following without a dedicated approved task:
+## Code Placement Rules
 
-- root-level `core.py`
-- root-level `main.py`
-- root-level `ui/`
+- New product code lives under `src/shield/`.
+- UI code lives under `src/shield/ui/`.
+- The current UI stack is PyQt6.
+- Do not reintroduce root-level `core.py`.
+- Do not reintroduce root-level `main.py`.
+- Do not reintroduce root-level `ui/`.
+- Do not add old heavy backend modules back into the root package.
+
+## Forbidden Unless Explicitly Requested
+
+Do not add or reintroduce any of the following without a dedicated approved
+task:
+
 - NudeNet or other NSFW model integration
-- DNS proxy
+- DNS proxy or DNS interception
 - screenshot capture
 - `mss`, `dxcam`, OpenCV, Pillow, or image-processing dependencies
-- SMTP/accountability email
-- NSSM/service installation
+- SMTP or accountability email
+- NSSM or service installation
 - uninstall protection
 - hard process protection
 - network calls
 - telemetry
 - cloud sync
 
-## UI rules
+## UI Rules
 
-- UI lives under `src/shield/ui/`.
-- The current UI stack is PyQt6.
-- Do not launch real fullscreen windows in automated tests.
-- UI tests should use offscreen mode, monkeypatching, or smoke tests.
-- Tone must be calm, non-shaming, and minimal.
+- Do not launch real fullscreen UI from automated tests or noninteractive
+  automation.
+- UI tests should use offscreen mode, monkeypatching, import tests, or smoke
+  tests.
+- UI tone must be calm, non-shaming, and minimal.
 
-## Data and privacy rules
+## Data And Privacy Rules
 
 - v0.1 stores data locally only.
 - Do not add network features unless explicitly requested.
 - Do not write screenshots or browser history to disk.
 - Do not overclaim medical, therapeutic, or addiction-treatment outcomes.
 
-## Testing rules
+## Testing Rules
 
-Before reporting a task as complete, run the test suite with the available Python interpreter.
+Before reporting a task as complete, run the test suite with the available
+Python interpreter.
 
 Preferred command:
 
@@ -79,50 +100,46 @@ Preferred command:
 python -m pytest
 ```
 
-If `python` is unavailable on Windows, use the known local interpreter, for example:
+If `python` is unavailable on Windows, use the known local interpreter, for
+example:
 
 ```powershell
 "C:\Users\Serdar Arif\AppData\Local\Programs\Python\Python314\python.exe" -m pytest
 ```
 
-## Commit rule
+## Durable Memory Rule
 
-Do not commit unless the user explicitly approves.
+These docs are project memory, not one-time notes.
 
-When approved:
+Mandatory rule: "If you changed code, architecture, scope, commands, constraints, or project direction, update the relevant memory docs in the same task before reporting completion."
 
-```powershell
-git status
-git add .
-git commit -m "<clear conventional commit message>"
-git push origin rebuild/v0-clean
-```
+If you changed code, architecture, behavior, scope, commands, tests,
+constraints, or project direction, update the relevant memory docs in the same
+task before reporting completion.
 
-## Documentation maintenance rule — mandatory
+At minimum, consider whether these files need updates:
 
-Project memory must not become stale.
+- `STATUS.md`
+- `ARCHITECTURE.md`
+- `DECISIONS.md`
+- `TASKS.md`
+- `AI_HANDOFF.md`
+- `README.md`
 
-Every AI agent that changes code, architecture, behavior, scope, commands, tests, or project direction must update the relevant memory docs in the same task.
+If a change affects these docs and the agent does not update them, the task is
+incomplete.
 
-Update these files when applicable:
+Decision history rule: "If a decision changes or a previous decision is reversed, do not silently overwrite history. Add a new decision entry explaining the change and reference the old decision."
 
-- `STATUS.md` — when feature status, test count, current milestone, or known gaps change.
-- `ARCHITECTURE.md` — when module structure, data flow, CLI commands, or storage boundaries change.
-- `DECISIONS.md` — when a design decision is made, reversed, or clarified.
-- `TASKS.md` — when current/next tasks change.
-- `AI_HANDOFF.md` — after every completed AI task, including what changed, tests run, commit hash if any, and next recommended task.
-- `README.md` — when user-facing install/run commands change.
+## Completion Report
 
-If a change affects these docs and the agent does not update them, the task is incomplete.
-
-## Handoff rule
-
-At the end of each task, report:
+At completion, report:
 
 - tests run and result
 - files changed
-- whether docs were updated
+- docs updated
+- any skipped or known limitations
 - commit hash if committed
 - what should be done next
+- whether the working tree is clean
 
-The next AI agent must be able to continue without relying on the previous chat transcript.
