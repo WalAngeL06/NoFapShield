@@ -19,11 +19,26 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="optional SQLite path for persisting the demo event",
     )
+    parser.add_argument(
+        "--screen",
+        choices=("overlay",),
+        default=None,
+        help="launch a specific UI screen",
+    )
     return parser
+
+
+def _run_overlay_screen() -> int:
+    from shield.ui.blur_overlay import run_overlay
+
+    return run_overlay()
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.screen == "overlay":
+        return _run_overlay_screen()
+
     config = Config()
     db_path = args.db_path if args.db_path is not None else config.db_path
 

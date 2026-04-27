@@ -11,6 +11,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `shield.core.Orchestrator`
 - `shield.db.EventStore`
 - `python -m shield.app --demo-trigger`
+- `python -m shield.app --screen overlay`
 
 ## Explicitly Out Of Scope
 
@@ -29,4 +30,5 @@ Run:
 ```bash
 python -m pytest
 python -m shield.app --demo-trigger
+python -m shield.app --screen overlay
 ```

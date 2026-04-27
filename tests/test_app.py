@@ -50,6 +50,14 @@ def test_cli_without_command_prints_help(capsys):
     assert "--demo-trigger" in output
 
 
+def test_overlay_screen_delegates_to_ui(monkeypatch):
+    monkeypatch.setattr("shield.app._run_overlay_screen", lambda: 23)
+
+    result = main(["--screen", "overlay"])
+
+    assert result == 23
+
+
 def test_module_entrypoint_runs_from_outside_repo(tmp_path):
     repo_root = Path(__file__).resolve().parents[1]
     src_path = repo_root / "src"
