@@ -22,6 +22,7 @@ old root-level architecture.
   - PyQt6 UI screens.
   - `src/shield/ui/blur_overlay.py` is the PyQt6 pause overlay.
   - `src/shield/ui/morning_checkin.py` is the PyQt6 morning check-in screen.
+  - `src/shield/ui/dashboard.py` is the PyQt6 read-only dashboard.
 
 ## Supported Commands
 
@@ -29,6 +30,7 @@ old root-level architecture.
 python -m shield.app --demo-trigger
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
+python -m shield.app --screen dashboard
 ```
 
 ## Explicitly Forbidden Current Architecture

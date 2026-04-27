@@ -10,6 +10,7 @@ This version intentionally contains only the project spine:
 - a CLI demo trigger
 - a fullscreen friction overlay screen
 - a local-only morning check-in screen
+- a read-only local dashboard screen
 
 The v0.1 scaffold does not include content classification, network interception,
 screenshot capture, Windows service management, uninstall protection, email, or
@@ -49,6 +50,15 @@ python -m shield.app --screen checkin
 
 The morning check-in stores the user's note in the configured local SQLite
 database only.
+
+## Dashboard
+
+```bash
+python -m shield.app --screen dashboard
+```
+
+The dashboard is a read-only view of recent check-ins and trigger events stored
+in the local SQLite database. No data leaves the device.
 
 ## AI Workflow
 

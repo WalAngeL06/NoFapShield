@@ -5,22 +5,20 @@ This is the fast-start summary for the next AI assistant.
 ## Last Known State
 
 - Last known branch: `rebuild/v0-clean`
-- Latest known product checkpoint: `1aed822 feat: add morning check-in screen`
-- Latest docs/process changeset: current commit containing these memory docs.
-  Verify the exact hash with `git log -1 --oneline`.
-- Current tests: `29 passed`
+- Latest known product checkpoint: dashboard screen (pending commit after `1aed822`)
+- Current tests: `43 passed`
 
 ## What Exists Now
 
 - clean v0.1 scaffold
-- PyQt6 pause overlay
-- PyQt6 morning check-in
+- PyQt6 pause overlay (`--screen overlay`)
+- PyQt6 morning check-in (`--screen checkin`)
+- PyQt6 read-only dashboard (`--screen dashboard`)
 - local SQLite event/check-in store
 
 ## What Is Not Present
 
-- dashboard
-- settings
+- settings screen
 - onboarding
 - detection
 - screenshot capture
@@ -30,7 +28,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Add a lightweight dashboard read-only view.
+Add a settings screen for goals and alternative actions.
 
 ## Handoff Protocol
 
@@ -58,4 +56,5 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `69b001c chore: rebuild clean v0.1 scaffold`
 - `99a0a4a feat: add PyQt6 pause overlay`
 - `1aed822 feat: add morning check-in screen`
-- Current docs/process changeset: add durable AI project memory docs.
+- Docs/process changeset: add durable AI project memory docs.
+- (pending) feat: add read-only dashboard screen

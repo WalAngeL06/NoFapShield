@@ -5,31 +5,28 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `29 passed`
-- Latest known product checkpoint before the docs workflow:
-  `1aed822 feat: add morning check-in screen`
-- Documentation/process task completed in the current docs changeset: durable AI
-  project memory docs added.
+- Tests passing: `43 passed`
+- Latest known product checkpoint: dashboard screen (pending commit)
 
 ## Completed Checkpoints
 
 - `69b001c chore: rebuild clean v0.1 scaffold`
 - `99a0a4a feat: add PyQt6 pause overlay`
 - `1aed822 feat: add morning check-in screen`
+- (pending) feat: add read-only dashboard screen
 
 ## Current Task
 
-No active product task after the documentation/process changeset.
+No active task. Dashboard delivered; awaiting user commit.
 
 ## Next Recommended Tasks
 
-1. Add lightweight dashboard read-only view.
-2. Add settings screen for goals/alternative actions.
-3. Wire manual demo trigger to overlay flow.
-4. Add onboarding.
-5. Later: optional local detection.
-6. Later: optional DNS/domain heuristics.
-7. Later: installer/release packaging.
+1. Add settings screen for goals/alternative actions.
+2. Wire manual demo trigger to overlay flow.
+3. Add onboarding.
+4. Later: optional local detection.
+5. Later: optional DNS/domain heuristics.
+6. Later: installer/release packaging.
 
 ## Rules For Updating This File
 
