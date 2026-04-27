@@ -5,8 +5,8 @@ This is the fast-start summary for the next AI assistant.
 ## Last Known State
 
 - Last known branch: `rebuild/v0-clean`
-- Latest known product checkpoint: dashboard screen (pending commit after `1aed822`)
-- Current tests: `43 passed`
+- Latest known product checkpoint: settings screen (pending commit after `1aed822`)
+- Current tests: `61 passed`
 
 ## What Exists Now
 
@@ -14,21 +14,21 @@ This is the fast-start summary for the next AI assistant.
 - PyQt6 pause overlay (`--screen overlay`)
 - PyQt6 morning check-in (`--screen checkin`)
 - PyQt6 read-only dashboard (`--screen dashboard`)
-- local SQLite event/check-in store
+- PyQt6 local-only settings (`--screen settings`)
+- local SQLite event/check-in/settings store
 
 ## What Is Not Present
 
-- settings screen
 - onboarding
 - detection
 - screenshot capture
 - DNS
-- SMTP
+- SMTP sending
 - service or uninstall protection
 
 ## Current Recommended Next Task
 
-Add a settings screen for goals and alternative actions.
+Wire the manual demo trigger to the overlay flow so saved alternative actions appear on the pause screen.
 
 ## Handoff Protocol
 
@@ -58,3 +58,4 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `1aed822 feat: add morning check-in screen`
 - Docs/process changeset: add durable AI project memory docs.
 - (pending) feat: add read-only dashboard screen
+- (pending) feat: add local-only settings screen

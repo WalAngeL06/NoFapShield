@@ -14,6 +14,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen overlay`
 - `python -m shield.app --screen checkin`
 - `python -m shield.app --screen dashboard`
+- `python -m shield.app --screen settings`
 - durable AI project memory docs for handoff and process continuity
 
 ## Explicitly Out Of Scope
@@ -46,4 +47,5 @@ python -m shield.app --demo-trigger
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
+python -m shield.app --screen settings
 ```

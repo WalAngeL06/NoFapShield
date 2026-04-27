@@ -82,6 +82,14 @@ def test_dashboard_screen_delegates_to_ui(monkeypatch):
     assert result == 41
 
 
+def test_settings_screen_delegates_to_ui(monkeypatch):
+    monkeypatch.setattr("shield.app._run_settings_screen", lambda db_path: 53)
+
+    result = main(["--screen", "settings"])
+
+    assert result == 53
+
+
 def test_module_entrypoint_runs_from_outside_repo(tmp_path):
     repo_root = Path(__file__).resolve().parents[1]
     src_path = repo_root / "src"

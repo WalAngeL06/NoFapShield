@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import json
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from shield.core.interfaces import FrictionEvent
 
@@ -26,7 +28,14 @@ CREATE TABLE IF NOT EXISTS checkins (
 )
 """
 
-SCHEMAS = (FRICTION_SCHEMA, CHECKIN_SCHEMA)
+SETTINGS_SCHEMA = """
+CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+)
+"""
+
+SCHEMAS = (FRICTION_SCHEMA, CHECKIN_SCHEMA, SETTINGS_SCHEMA)
 
 
 class EventStore:
@@ -96,6 +105,26 @@ class EventStore:
             (limit,),
         ).fetchall()
         return [dict(row) for row in rows]
+
+    def set_setting(self, key: str, value: Any) -> None:
+        self._conn.execute(
+            "INSERT INTO settings (key, value) VALUES (?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+            (key, json.dumps(value)),
+        )
+        self._conn.commit()
+
+    def get_setting(self, key: str, default: Any = None) -> Any:
+        row = self._conn.execute(
+            "SELECT value FROM settings WHERE key = ?", (key,)
+        ).fetchone()
+        if row is None:
+            return default
+        return json.loads(row["value"])
+
+    def list_settings(self) -> dict[str, Any]:
+        rows = self._conn.execute("SELECT key, value FROM settings").fetchall()
+        return {row["key"]: json.loads(row["value"]) for row in rows}
 
 
 DBService = EventStore

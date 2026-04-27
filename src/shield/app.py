@@ -21,7 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--screen",
-        choices=("overlay", "checkin", "dashboard"),
+        choices=("overlay", "checkin", "dashboard", "settings"),
         default=None,
         help="launch a specific UI screen",
     )
@@ -46,6 +46,12 @@ def _run_dashboard_screen(db_path: str | None = None) -> int:
     return run_dashboard(db_path=db_path)
 
 
+def _run_settings_screen(db_path: str | None = None) -> int:
+    from shield.ui.settings import run_settings
+
+    return run_settings(db_path=db_path)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.screen == "overlay":
@@ -55,6 +61,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     db_path = args.db_path if args.db_path is not None else config.db_path
     if args.screen == "dashboard":
         return _run_dashboard_screen(db_path)
+    if args.screen == "settings":
+        return _run_settings_screen(db_path)
     if args.screen == "checkin":
         return _run_checkin_screen(db_path)
 

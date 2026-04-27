@@ -17,12 +17,14 @@ old root-level architecture.
     `Orchestrator`.
 - `src/shield/db/`
   - Local SQLite event store.
-  - Stores demo friction events and morning check-in text locally.
+  - Stores demo friction events, morning check-in text, and key/value
+    settings locally.
 - `src/shield/ui/`
   - PyQt6 UI screens.
   - `src/shield/ui/blur_overlay.py` is the PyQt6 pause overlay.
   - `src/shield/ui/morning_checkin.py` is the PyQt6 morning check-in screen.
   - `src/shield/ui/dashboard.py` is the PyQt6 read-only dashboard.
+  - `src/shield/ui/settings.py` is the PyQt6 local-only settings screen.
 
 ## Supported Commands
 
@@ -31,6 +33,7 @@ python -m shield.app --demo-trigger
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
+python -m shield.app --screen settings
 ```
 
 ## Explicitly Forbidden Current Architecture
