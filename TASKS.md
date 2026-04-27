@@ -7,7 +7,7 @@ This file is the single source of truth for current and next work.
 - Working branch: `rebuild/v0-clean`
 - Tests passing: `91 passed`
 - Latest known committed product checkpoint:
-  `d9ce5d4 feat: add default startup flow`
+  `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
 
@@ -22,16 +22,15 @@ This file is the single source of truth for current and next work.
 - `caa9356 feat: add onboarding`
 - `9753375 fix: recognize today's dashboard checkin`
 - `d9ce5d4 feat: add default startup flow`
+- `223105a feat: use saved alternative actions in overlay`
 
 ## Current Task
 
-Use saved alternative actions in overlay.
-
-- Status: implemented locally, not committed by the AI.
+No active task.
 
 ## Next Recommended Tasks
 
-1. Review and manually commit the local saved-actions overlay change.
+1. Manual UI smoke test.
 2. Later: optional local detection.
 3. Later: optional DNS/domain heuristics.
 4. Later: installer/release packaging.

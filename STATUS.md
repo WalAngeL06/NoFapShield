@@ -24,7 +24,8 @@ Current tests: `91 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
-(`19ec0c8`), onboarding (`caa9356`), and default startup flow (`d9ce5d4`).
+(`19ec0c8`), onboarding (`caa9356`), default startup flow (`d9ce5d4`), and
+saved overlay actions (`223105a`).
 The latest known fix is `9753375 fix: recognize today's dashboard checkin`.
 
 `--demo-trigger --show-overlay` is current committed functionality. It records
@@ -41,13 +42,13 @@ Bare `python -m shield.app` is current committed functionality. It reads local
 `onboarding_completed` state and routes to dashboard when complete or onboarding
 when missing, false, malformed, or unreadable.
 
-Current local product change: overlay launch paths now read local
+Saved alternative actions in overlay are current committed functionality.
+Overlay launch paths read local
 `alternative_actions` from settings/onboarding and pass them into the pause
 overlay. Missing, empty, malformed, or unreadable actions fall back to default
 action cards.
 
-Next recommended task: review and manually commit the local saved-actions
-overlay change.
+Next recommended product task: manual UI smoke test.
 
 ## Explicitly Out Of Scope
 

@@ -6,11 +6,9 @@ This is the fast-start summary for the next AI assistant.
 
 - Last known branch: `rebuild/v0-clean`
 - Latest known committed product checkpoint:
-  `d9ce5d4 feat: add default startup flow`
+  `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
-- Current local product change: `feat: use saved alternative actions in overlay`
-  implemented locally; user controls Git writes.
 - Current tests: `91 passed`
 
 ## What Exists Now
@@ -23,7 +21,7 @@ This is the fast-start summary for the next AI assistant.
 - explicit demo overlay flow (`--demo-trigger --show-overlay`)
 - PyQt6 local-only onboarding (`--screen onboarding`)
 - default startup routing (`python -m shield.app`)
-- overlay action cards use saved local `alternative_actions` in local changes
+- overlay action cards use saved local `alternative_actions`
 - local SQLite event/check-in/settings store
 
 ## What Is Not Present
@@ -36,7 +34,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Review and manually commit the local saved-actions overlay change.
+Manual UI smoke test.
 
 ## Handoff Protocol
 
@@ -71,4 +69,4 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `caa9356 feat: add onboarding`
 - `9753375 fix: recognize today's dashboard checkin`
 - `d9ce5d4 feat: add default startup flow`
-- Local, uncommitted: `feat: use saved alternative actions in overlay`
+- `223105a feat: use saved alternative actions in overlay`
