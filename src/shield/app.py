@@ -21,7 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--screen",
-        choices=("overlay",),
+        choices=("overlay", "checkin"),
         default=None,
         help="launch a specific UI screen",
     )
@@ -34,6 +34,12 @@ def _run_overlay_screen() -> int:
     return run_overlay()
 
 
+def _run_checkin_screen(db_path: str) -> int:
+    from shield.ui.morning_checkin import run_checkin
+
+    return run_checkin(db_path=db_path)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.screen == "overlay":
@@ -41,6 +47,8 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     config = Config()
     db_path = args.db_path if args.db_path is not None else config.db_path
+    if args.screen == "checkin":
+        return _run_checkin_screen(db_path)
 
     with EventStore(db_path) as store:
         orchestrator = Orchestrator(config=config, event_store=store)

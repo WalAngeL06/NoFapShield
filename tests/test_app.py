@@ -58,6 +58,22 @@ def test_overlay_screen_delegates_to_ui(monkeypatch):
     assert result == 23
 
 
+def test_checkin_screen_delegates_to_ui(monkeypatch, tmp_path):
+    db_path = tmp_path / "checkin.db"
+    received: list[str] = []
+
+    def fake_checkin(path: str) -> int:
+        received.append(path)
+        return 31
+
+    monkeypatch.setattr("shield.app._run_checkin_screen", fake_checkin)
+
+    result = main(["--screen", "checkin", "--db-path", str(db_path)])
+
+    assert result == 31
+    assert received == [str(db_path)]
+
+
 def test_module_entrypoint_runs_from_outside_repo(tmp_path):
     repo_root = Path(__file__).resolve().parents[1]
     src_path = repo_root / "src"

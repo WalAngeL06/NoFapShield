@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 
 from shield.core.interfaces import FrictionEvent
 
-SCHEMA = """
+FRICTION_SCHEMA = """
 CREATE TABLE IF NOT EXISTS friction_events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     session_id TEXT NOT NULL,
@@ -17,6 +18,16 @@ CREATE TABLE IF NOT EXISTS friction_events (
 )
 """
 
+CHECKIN_SCHEMA = """
+CREATE TABLE IF NOT EXISTS checkins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    text TEXT NOT NULL
+)
+"""
+
+SCHEMAS = (FRICTION_SCHEMA, CHECKIN_SCHEMA)
+
 
 class EventStore:
     def __init__(self, db_path: str | Path = ":memory:") -> None:
@@ -25,7 +36,8 @@ class EventStore:
             Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(self.db_path)
         self._conn.row_factory = sqlite3.Row
-        self._conn.execute(SCHEMA)
+        for schema in SCHEMAS:
+            self._conn.execute(schema)
         self._conn.commit()
 
     def close(self) -> None:
@@ -70,6 +82,20 @@ class EventStore:
     def count_events(self) -> int:
         row = self._conn.execute("SELECT COUNT(*) FROM friction_events").fetchone()
         return int(row[0])
+
+    def save_checkin(self, text: str) -> None:
+        self._conn.execute(
+            "INSERT INTO checkins (created_at, text) VALUES (?, ?)",
+            (datetime.now(timezone.utc).isoformat(), text),
+        )
+        self._conn.commit()
+
+    def get_checkin_history(self, limit: int = 100) -> list[dict]:
+        rows = self._conn.execute(
+            "SELECT created_at, text FROM checkins ORDER BY id DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+        return [dict(row) for row in rows]
 
 
 DBService = EventStore

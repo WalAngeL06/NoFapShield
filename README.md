@@ -9,6 +9,7 @@ This version intentionally contains only the project spine:
 - a small SQLite event store
 - a CLI demo trigger
 - a fullscreen friction overlay screen
+- a local-only morning check-in screen
 
 The v0.1 scaffold does not include content classification, network interception,
 screenshot capture, Windows service management, uninstall protection, email, or
@@ -39,3 +40,12 @@ python -m shield.app --screen overlay
 
 The overlay is a local fullscreen friction screen with a 15-second countdown
 before action choices are shown.
+
+## Morning Check-in
+
+```bash
+python -m shield.app --screen checkin
+```
+
+The morning check-in stores the user's note in the configured local SQLite
+database only.

@@ -12,6 +12,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `shield.db.EventStore`
 - `python -m shield.app --demo-trigger`
 - `python -m shield.app --screen overlay`
+- `python -m shield.app --screen checkin`
 
 ## Explicitly Out Of Scope
 
@@ -31,4 +32,5 @@ Run:
 python -m pytest
 python -m shield.app --demo-trigger
 python -m shield.app --screen overlay
+python -m shield.app --screen checkin
 ```

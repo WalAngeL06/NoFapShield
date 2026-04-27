@@ -42,3 +42,14 @@ def test_list_events_returns_newest_first(tmp_path):
     rows = store.list_events()
 
     assert [row["session_id"] for row in rows] == ["newer", "older"]
+
+
+def test_checkin_roundtrip(tmp_path):
+    store = EventStore(tmp_path / "shield.db")
+
+    store.save_checkin("Bugün kendime sakin bir not yazıyorum.")
+
+    rows = store.get_checkin_history()
+    assert len(rows) == 1
+    assert rows[0]["text"] == "Bugün kendime sakin bir not yazıyorum."
+    assert rows[0]["created_at"]
