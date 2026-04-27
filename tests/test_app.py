@@ -141,6 +141,14 @@ def test_settings_screen_delegates_to_ui(monkeypatch):
     assert result == 53
 
 
+def test_onboarding_screen_delegates_to_ui(monkeypatch):
+    monkeypatch.setattr("shield.app._run_onboarding_screen", lambda db_path: 67)
+
+    result = main(["--screen", "onboarding"])
+
+    assert result == 67
+
+
 def test_module_entrypoint_runs_from_outside_repo(tmp_path):
     repo_root = Path(__file__).resolve().parents[1]
     src_path = repo_root / "src"

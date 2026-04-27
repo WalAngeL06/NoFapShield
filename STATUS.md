@@ -16,9 +16,10 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen checkin`
 - `python -m shield.app --screen dashboard`
 - `python -m shield.app --screen settings`
+- `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `63 passed`.
+Current tests: `72 passed`.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), and demo-overlay flow
@@ -29,7 +30,12 @@ the demo event, prints the stable demo output plus `overlay=launched`, and
 delegates to the existing pause overlay runner. Default `--demo-trigger` still
 does not open the overlay.
 
-Next recommended product task: add onboarding.
+Current local product change: `--screen onboarding` adds a local-only PyQt6
+setup flow for a personal goal, alternative actions, optional local email
+placeholder, and `onboarding_completed=true`. No email is sent in v0.1. Saved
+alternative actions are not wired into the pause overlay yet.
+
+Next recommended task: review and manually commit the local onboarding change.
 
 ## Explicitly Out Of Scope
 
@@ -38,7 +44,7 @@ Next recommended product task: add onboarding.
 - screenshot capture
 - Windows service installation
 - uninstall protection
-- email notifications
+- email sending or accountability delivery
 - full desktop UI
 
 ## Project Memory Workflow
@@ -71,4 +77,5 @@ python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
 python -m shield.app --screen settings
+python -m shield.app --screen onboarding
 ```

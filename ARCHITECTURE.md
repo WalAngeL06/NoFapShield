@@ -25,6 +25,7 @@ old root-level architecture.
   - `src/shield/ui/morning_checkin.py` is the PyQt6 morning check-in screen.
   - `src/shield/ui/dashboard.py` is the PyQt6 read-only dashboard.
   - `src/shield/ui/settings.py` is the PyQt6 local-only settings screen.
+  - `src/shield/ui/onboarding.py` is the PyQt6 local-only onboarding screen.
 
 ## Supported Commands
 
@@ -35,12 +36,17 @@ python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
 python -m shield.app --screen settings
+python -m shield.app --screen onboarding
 ```
 
 `--demo-trigger` records and prints a synthetic friction event without opening
 UI by default. `--demo-trigger --show-overlay` records and prints the same event,
 then delegates to the existing PyQt6 overlay runner. The separate
 `--screen overlay` command remains unchanged.
+
+`--screen onboarding` saves goal text, alternative actions, optional local email
+placeholder, and an onboarding completion flag through the local settings store.
+It does not send email or wire saved alternative actions into the overlay.
 
 ## Explicitly Forbidden Current Architecture
 
@@ -58,7 +64,10 @@ The current v0.1 architecture intentionally does not include:
 - NSFW model detection
 - DNS proxy
 - screenshot capture
-- SMTP or accountability email
+- SMTP
+- email sending
+- accountability delivery
+- local `accountability_email` placeholder storage exists in settings/onboarding
 - NSSM or service installation
 - uninstall protection
 

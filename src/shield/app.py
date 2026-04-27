@@ -21,7 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--screen",
-        choices=("overlay", "checkin", "dashboard", "settings"),
+        choices=("overlay", "checkin", "dashboard", "settings", "onboarding"),
         default=None,
         help="launch a specific UI screen",
     )
@@ -55,6 +55,12 @@ def _run_settings_screen(db_path: str | None = None) -> int:
     from shield.ui.settings import run_settings
 
     return run_settings(db_path=db_path)
+
+
+def _run_onboarding_screen(db_path: str | None = None) -> int:
+    from shield.ui.onboarding import run_onboarding
+
+    return run_onboarding(db_path=db_path)
 
 
 def _print_demo_event(event: FrictionEvent) -> None:
@@ -97,6 +103,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_dashboard_screen(db_path)
     if args.screen == "settings":
         return _run_settings_screen(db_path)
+    if args.screen == "onboarding":
+        return _run_onboarding_screen(db_path)
     if args.screen == "checkin":
         return _run_checkin_screen(db_path)
 

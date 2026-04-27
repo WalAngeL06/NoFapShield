@@ -5,9 +5,11 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `63 passed`
+- Tests passing: `72 passed`
 - Latest known committed product checkpoint:
   `19ec0c8 feat: wire demo trigger to overlay flow`
+- Current local product change: `feat: add onboarding` implemented locally; user
+  controls Git writes.
 
 ## Completed Checkpoints
 
@@ -20,11 +22,13 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Add onboarding.
+
+- Status: implemented locally, not committed by the AI.
 
 ## Next Recommended Tasks
 
-1. Add onboarding.
+1. Review and manually commit the local onboarding change.
 2. Later: optional local detection.
 3. Later: optional DNS/domain heuristics.
 4. Later: installer/release packaging.

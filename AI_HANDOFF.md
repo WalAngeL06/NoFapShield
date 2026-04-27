@@ -7,7 +7,9 @@ This is the fast-start summary for the next AI assistant.
 - Last known branch: `rebuild/v0-clean`
 - Latest known committed product checkpoint:
   `19ec0c8 feat: wire demo trigger to overlay flow`
-- Current tests: `63 passed`
+- Current local product change: `feat: add onboarding` implemented locally; user
+  controls Git writes.
+- Current tests: `72 passed`
 
 ## What Exists Now
 
@@ -17,11 +19,11 @@ This is the fast-start summary for the next AI assistant.
 - PyQt6 read-only dashboard (`--screen dashboard`)
 - PyQt6 local-only settings (`--screen settings`)
 - explicit demo overlay flow (`--demo-trigger --show-overlay`)
+- PyQt6 local-only onboarding (`--screen onboarding`) in local changes
 - local SQLite event/check-in/settings store
 
 ## What Is Not Present
 
-- onboarding
 - detection
 - screenshot capture
 - DNS
@@ -30,7 +32,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Add onboarding.
+Review and manually commit the local onboarding change.
 
 ## Handoff Protocol
 
@@ -62,3 +64,4 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `6f50b55 feat: add read-only dashboard`
 - `78526cd feat: add local settings screen`
 - `19ec0c8 feat: wire demo trigger to overlay flow`
+- Local, uncommitted: `feat: add onboarding`
