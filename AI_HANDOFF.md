@@ -12,7 +12,7 @@ This is the fast-start summary for the next AI assistant.
 - Latest known committed docs checkpoint:
   `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known committed product checkpoint:
-  `712e62f feat: add editable local trigger risk list`
+  `9ee4fc7 feat: add local trigger allowlist`
 - Latest known test/config checkpoint:
   `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
@@ -21,9 +21,7 @@ This is the fast-start summary for the next AI assistant.
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current local product task: add local trigger allowlist / false-positive
-  handling plus durable default trigger-settings storage, pending user
-  review/commit.
+- Current task: No active task.
 
 ## What Exists Now
 
@@ -113,6 +111,7 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `c8e8c4a feat: add local URL/domain trigger prototype`
 - `b76abd2 test: use ignored pytest basetemp`
 - `712e62f feat: add editable local trigger risk list`
+- `9ee4fc7 feat: add local trigger allowlist`
 - Local URL/domain trigger prototype for v0.2 is committed functionality. It is
   manual/CLI-only and does not add automatic browser monitoring, DNS/proxy,
   screenshot capture, network calls, cloud sync, telemetry, SMTP/email sending,
@@ -123,15 +122,15 @@ Decision history rule: "If a decision changes or a previous decision is reversed
   user-owned domains in local SQLite setting `trigger_risk_domains`, adds
   `--list-risk-domains` and `--set-risk-domains`, preserves placeholder
   defaults as fallback, and ships no real adult domains.
-- Local allowlist / false-positive handling is implemented locally and pending
-  user review/commit. It stores user-owned allow domains in local SQLite setting
+- Local allowlist / false-positive handling is committed functionality. It
+  stores user-owned allow domains in local SQLite setting
   `trigger_allow_domains`, adds `--list-allow-domains` and
   `--set-allow-domains`, checks allow domains before risk domains, records no
   friction event for allowlisted candidates, launches no overlay for
   allowlisted candidates, and ships no real adult domains.
-- The current targeted fix makes documented trigger settings commands durable by
-  resolving a user-local SQLite database by default. Explicit `--db-path` still
-  fully controls the database path for tests and development.
+- Documented trigger settings commands are durable by default through a
+  user-local SQLite database. Explicit `--db-path` still fully controls the
+  database path for tests and development.
 
 ## Manual UI Smoke Notes
 

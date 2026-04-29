@@ -40,11 +40,10 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current local product task: add local trigger allowlist / false-positive
-handling.
+Current task: No active task.
 
 Latest known product checkpoint:
-`712e62f feat: add editable local trigger risk list`.
+`9ee4fc7 feat: add local trigger allowlist`.
 
 Latest known test/config checkpoint:
 `b76abd2 test: use ignored pytest basetemp`.
@@ -66,22 +65,22 @@ list when the input has no valid domains. Placeholder defaults (`risk.example`,
 `blocked.example`, `relapse.example`) remain the fallback, and no real adult
 domains are shipped.
 
-The current local uncommitted v0.2 task adds a user-owned local allowlist for
-false-positive handling and fixes local trigger settings durability. Allow
-domains are stored in the SQLite setting `trigger_allow_domains`.
-`--list-allow-domains` prints the allowlist, and `--set-allow-domains` stores
-valid normalized domains without wiping the previous list when the input has no
-valid domains. Allowlisted domains override risk-domain matches locally and do
-not record friction events or open the overlay. When `--db-path` is omitted,
-the app now resolves a durable user-local SQLite database for trigger settings
-and events; `--db-path` still overrides the database path for tests and
-development.
+The local allowlist / false-positive handling expansion is committed
+functionality. Allow domains are stored in the SQLite setting
+`trigger_allow_domains`. `--list-allow-domains` prints the allowlist, and
+`--set-allow-domains` stores valid normalized domains without wiping the
+previous list when the input has no valid domains. Allowlisted domains override
+risk-domain matches locally and do not record friction events or open the
+overlay. When `--db-path` is omitted, the app resolves a durable user-local
+SQLite database for trigger settings and events; `--db-path` still overrides
+the database path for tests and development.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
 (`19ec0c8`), onboarding (`caa9356`), default startup flow (`d9ce5d4`), and
 saved overlay actions (`223105a`), manual local URL/domain trigger prototype
-(`c8e8c4a`), and editable local trigger risk list (`712e62f`).
+(`c8e8c4a`), editable local trigger risk list (`712e62f`), and local trigger
+allowlist (`9ee4fc7`).
 The latest known fix is `9753375 fix: recognize today's dashboard checkin`.
 
 `--demo-trigger --show-overlay` is current committed functionality. It records
@@ -116,7 +115,7 @@ The editable risk-list expansion updates `--trigger-url` to use custom local
 settings when valid. Invalid, empty, missing, or malformed custom lists fall
 back to the placeholder defaults.
 
-The current local allowlist expansion updates `--trigger-url` to check
+The committed local allowlist expansion updates `--trigger-url` to check
 `trigger_allow_domains` before risk domains. Allowlist matches print
 `trigger=allowlisted`, do not record events, and do not launch the overlay even
 when `--show-overlay` is passed. The risk-list and allowlist CLI helpers persist

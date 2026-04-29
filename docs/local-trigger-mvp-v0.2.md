@@ -22,16 +22,17 @@ prints the active local list, and `--set-risk-domains` stores valid normalized
 domains. Placeholder defaults remain the fallback, and no real adult domains
 are shipped.
 
-Current local implementation status: local allowlist / false-positive handling
-is implemented locally and pending user review/commit. Custom allow domains are
-stored in the local SQLite setting `trigger_allow_domains`.
+Current implementation status: local allowlist / false-positive handling is
+committed on `rebuild/v0-clean` as
+`9ee4fc7 feat: add local trigger allowlist`. Custom allow domains are stored in
+the local SQLite setting `trigger_allow_domains`.
 `--list-allow-domains` prints the local allowlist, and `--set-allow-domains`
 stores valid normalized allow domains. The allowlist has no placeholder
 defaults, overrides risk matches locally, records no friction event for
-allowlisted candidates, and launches no overlay for allowlisted candidates. The
-current local fix also makes trigger settings durable by default: when
-`--db-path` is omitted, Shield resolves a user-local SQLite database, while
-`--db-path` remains available for isolated tests and development runs.
+allowlisted candidates, and launches no overlay for allowlisted candidates.
+Trigger settings are durable by default: when `--db-path` is omitted, Shield
+resolves a user-local SQLite database, while `--db-path` remains available for
+isolated tests and development runs.
 
 ## 1. Problem Statement
 
