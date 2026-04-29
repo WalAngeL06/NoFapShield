@@ -22,6 +22,18 @@ The repository is a clean v0.1 scaffold. It includes:
 
 Current tests: `91 passed`.
 
+Published release: `v0.1.0-alpha`.
+
+- GitHub Release title:
+  `Shield v0.1.0-alpha — Local-only pause layer MVP`
+- Release type: pre-release / alpha / developer preview
+- Target commit:
+  `3aa3980 chore: refresh memory docs after release checklist commit`
+- Tests before tag: `91 passed`
+- Manual UI smoke: `PASS`
+- Working tree was clean before tag
+- No packaged installer yet
+
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
 (`19ec0c8`), onboarding (`caa9356`), default startup flow (`d9ce5d4`), and
@@ -85,16 +97,22 @@ The v0.1 alpha release checklist is committed current documentation at
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.
 
-Next recommended task: Final v0.1 alpha verification and tag.
+Next recommended task: Plan Windows packaging / installer for post-release.
 
 ## Explicitly Out Of Scope
 
-- content classification
+- content detection or content classification
 - DNS interception
 - screenshot capture
+- cloud sync
+- telemetry
+- network calls
+- SMTP
 - Windows service installation
 - uninstall protection
+- hard process protection
 - email sending or accountability delivery
+- packaged installer
 - full desktop UI
 
 ## Project Memory Workflow

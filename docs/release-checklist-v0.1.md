@@ -14,6 +14,18 @@ This is not a packaged installer release unless packaging is added later.
 Running v0.1 alpha currently requires a local Python environment from the
 repository checkout.
 
+## Release Publication Status
+
+- Tag pushed: `v0.1.0-alpha`
+- GitHub Release published: `Shield v0.1.0-alpha — Local-only pause layer MVP`
+- Target commit:
+  `3aa3980 chore: refresh memory docs after release checklist commit`
+- Release type: pre-release / alpha / developer preview
+- Tests before tag: `91 passed`
+- Manual UI smoke: `PASS`
+- Working tree was clean before tag.
+- No packaged installer yet.
+
 ## 2. Current Verification Snapshot
 
 - Automated tests: `91 passed`
@@ -77,9 +89,9 @@ These polish notes are not blocking v0.1 alpha:
 - [x] Release checklist present.
 - [x] Privacy/limitations clear in README.
 - [x] No prohibited scope added.
-- [ ] Working tree clean before tag.
+- [x] Working tree clean before tag.
 - [ ] Branch pushed to origin.
-- [ ] Optional: final review no findings.
+- [x] Optional: final review no findings.
 
 ## 7. Suggested Release Notes Draft
 
@@ -160,9 +172,10 @@ python -m shield.app --demo-trigger --show-overlay
 - No P0 blocker found.
 ````
 
-## 8. Suggested Tag Commands
+## 8. Manual Tag Commands
 
-User should run these manually only after final verification:
+These were the intended manual tag commands. `v0.1.0-alpha` is now published,
+so do not rerun them for the same tag.
 
 ```powershell
 git status
@@ -171,8 +184,8 @@ git tag -a v0.1.0-alpha -m "Shield v0.1.0-alpha"
 git push origin v0.1.0-alpha
 ```
 
-Do not run these commands until the working tree is clean, the branch is pushed,
-and final verification is complete.
+For future releases, run equivalent commands manually only after the working
+tree is clean, the branch is pushed, and final verification is complete.
 
 ## 9. Next After Release
 

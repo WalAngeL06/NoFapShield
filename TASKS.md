@@ -6,7 +6,11 @@ This file is the single source of truth for current and next work.
 
 - Working branch: `rebuild/v0-clean`
 - Tests passing: `91 passed`
-- Latest known committed docs checkpoint:
+- Published release:
+  `v0.1.0-alpha` / `Shield v0.1.0-alpha — Local-only pause layer MVP`
+- Release target commit:
+  `3aa3980 chore: refresh memory docs after release checklist commit`
+- Latest known committed release docs checkpoint:
   `aa69ee6 docs: add v0.1 alpha release checklist`
 - Latest known product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
@@ -28,6 +32,9 @@ This file is the single source of truth for current and next work.
 - Manual UI smoke test: `PASS` with non-blocking polish notes.
 - `c812f41 docs: polish README for v0.1 alpha`
 - `aa69ee6 docs: add v0.1 alpha release checklist`
+- `3aa3980 chore: refresh memory docs after release checklist commit`
+- `v0.1.0-alpha` tag pushed and GitHub Release published as a pre-release /
+  alpha / developer preview.
 
 ## Current Task
 
@@ -35,8 +42,8 @@ No active task.
 
 ## Next Recommended Tasks
 
-1. Final v0.1 alpha verification and tag.
-2. Later: installer/release packaging.
+1. Plan Windows packaging / installer for post-release.
+2. Later: UI visual polish.
 3. Later: optional local detection.
 4. Later: optional DNS/domain heuristics.
 

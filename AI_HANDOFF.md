@@ -5,6 +5,10 @@ This is the fast-start summary for the next AI assistant.
 ## Last Known State
 
 - Last known branch: `rebuild/v0-clean`
+- Published release:
+  `v0.1.0-alpha` / `Shield v0.1.0-alpha — Local-only pause layer MVP`
+- Release target commit:
+  `3aa3980 chore: refresh memory docs after release checklist commit`
 - Latest known committed docs checkpoint:
   `aa69ee6 docs: add v0.1 alpha release checklist`
 - Latest known committed product checkpoint:
@@ -12,6 +16,9 @@ This is the fast-start summary for the next AI assistant.
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
 - Current tests: `91 passed`
+- Manual UI smoke: `PASS`
+- Release type: pre-release / alpha / developer preview
+- Packaged installer: not included yet
 
 ## What Exists Now
 
@@ -28,15 +35,19 @@ This is the fast-start summary for the next AI assistant.
 
 ## What Is Not Present
 
-- detection
+- content detection
 - screenshot capture
-- DNS
-- SMTP sending
-- service or uninstall protection
+- DNS interception/proxy
+- cloud sync, telemetry, or network calls
+- SMTP/email sending
+- accountability delivery
+- Windows service or NSSM integration
+- uninstall protection or hard process protection
+- packaged installer
 
 ## Current Recommended Next Task
 
-Final v0.1 alpha verification and tag.
+Plan Windows packaging / installer for post-release.
 
 ## Handoff Protocol
 
@@ -75,6 +86,9 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - Manual UI smoke test: `PASS`; no P0 blocker found.
 - `c812f41 docs: polish README for v0.1 alpha`
 - `aa69ee6 docs: add v0.1 alpha release checklist`
+- `3aa3980 chore: refresh memory docs after release checklist commit`
+- `v0.1.0-alpha` tag pushed and GitHub Release published as
+  `Shield v0.1.0-alpha — Local-only pause layer MVP`
 
 ## Manual UI Smoke Notes
 
