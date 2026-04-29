@@ -58,8 +58,8 @@ class EventStore:
     def __exit__(self, exc_type, exc, tb) -> None:
         self.close()
 
-    def record_event(self, event: FrictionEvent) -> None:
-        self._conn.execute(
+    def record_event(self, event: FrictionEvent) -> int:
+        cursor = self._conn.execute(
             "INSERT INTO friction_events "
             "(session_id, triggered_at, source, score, threshold, reason) "
             "VALUES (?, ?, ?, ?, ?, ?)",
@@ -73,9 +73,10 @@ class EventStore:
             ),
         )
         self._conn.commit()
+        return int(cursor.lastrowid)
 
-    def record_friction(self, event: FrictionEvent) -> None:
-        self.record_event(event)
+    def record_friction(self, event: FrictionEvent) -> int:
+        return self.record_event(event)
 
     def list_events(self, limit: int = 100) -> list[dict]:
         rows = self._conn.execute(

@@ -11,6 +11,10 @@ old root-level architecture.
 - `src/shield/app.py`
   - CLI entrypoint.
   - Dispatches default startup, supported demo commands, and UI commands.
+- `src/shield/trigger.py`
+  - Pure local URL/domain trigger helpers.
+  - Contains placeholder prototype risk domains and matcher functions for the
+    manual `--trigger-url` flow.
 - `src/shield/core/`
   - Lightweight dataclasses, config, and orchestration helpers.
   - Contains `Config`, `FrictionEvent`, trigger source types, and
@@ -33,6 +37,8 @@ old root-level architecture.
 python -m shield.app
 python -m shield.app --demo-trigger
 python -m shield.app --demo-trigger --show-overlay
+python -m shield.app --trigger-url "risk.example"
+python -m shield.app --trigger-url "risk.example" --show-overlay
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
@@ -50,6 +56,13 @@ UI by default. `--demo-trigger --show-overlay` records and prints the same event
 then delegates to the existing PyQt6 overlay runner. Overlay launch paths read
 local `alternative_actions` settings and pass them to the overlay when present;
 the overlay falls back to default action cards otherwise.
+
+`--trigger-url` is a manual local v0.2 prototype. It classifies a supplied
+URL/domain/string against a small local placeholder risk list, records a local
+`manual_url_trigger` friction event on match, and can delegate to the existing
+overlay path with `--show-overlay`. It does not monitor browsers, inspect
+browser history, intercept DNS, capture screenshots, call the network, or claim
+complete blocking.
 
 `--screen onboarding` saves goal text, alternative actions, optional local email
 placeholder, and an onboarding completion flag through the local settings store.

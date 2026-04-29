@@ -30,6 +30,23 @@ to treat addiction, and does not claim to fully block or detect pornography.
 - Current automated verification snapshot: `91 passed`.
 - Manual UI smoke test: `PASS` with non-blocking polish notes.
 
+## Current v0.2 Development Snapshot
+
+The current development branch adds a manual local URL/domain trigger
+prototype. This is not automatic browser monitoring, full blocking, or porn
+detection.
+
+The prototype:
+
+- Classifies a user-supplied URL/domain/string against a small local placeholder
+  risk list.
+- Uses only safe placeholder domains such as `risk.example`.
+- Records a local friction event when the supplied candidate matches.
+- Can delegate to the existing pause overlay when `--show-overlay` is passed.
+- Keeps all data local.
+
+Current automated verification snapshot: `113 passed`.
+
 ## What v0.1 Alpha Does Not Include
 
 - No content detection.
@@ -124,8 +141,24 @@ Record a synthetic local demo event and open the overlay:
 python -m shield.app --demo-trigger --show-overlay
 ```
 
+Classify a supplied URL/domain/string against the local prototype risk list:
+
+```powershell
+python -m shield.app --trigger-url "risk.example"
+```
+
+Record a matching local trigger event and open the overlay:
+
+```powershell
+python -m shield.app --trigger-url "risk.example" --show-overlay
+```
+
 The screen commands open PyQt6 windows, and the overlay command opens fullscreen
 UI. Treat them as manual UI checks, not automated test commands.
+
+The `--trigger-url` command is a manual local prototype. It does not monitor
+browsers, inspect browser history, intercept DNS, capture screenshots, call the
+network, sync to cloud services, or claim complete blocking.
 
 ## Current Known Polish Notes
 

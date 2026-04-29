@@ -13,6 +13,8 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app`
 - `python -m shield.app --demo-trigger`
 - `python -m shield.app --demo-trigger --show-overlay`
+- `python -m shield.app --trigger-url`
+- `python -m shield.app --trigger-url --show-overlay`
 - `python -m shield.app --screen overlay`
 - `python -m shield.app --screen checkin`
 - `python -m shield.app --screen dashboard`
@@ -20,7 +22,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `91 passed`.
+Current tests: `113 passed`.
 
 Published release: `v0.1.0-alpha`.
 
@@ -34,10 +36,12 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current local documentation task: v0.2 local trigger MVP planning.
-The plan is being added at `docs/local-trigger-mvp-v0.2.md`; it is planning
-only and does not add trigger, detection, browser monitoring, DNS, screenshot,
-network, service, hardening, or packaging implementation.
+Current local product task: v0.2 manual local URL/domain trigger prototype.
+The implementation is local-only, uses a small placeholder risk list, records
+matching events through `EventStore`, and can delegate to the existing pause
+overlay when `--show-overlay` is passed. It does not add browser monitoring,
+DNS/proxy behavior, screenshot capture, network calls, services, hardening,
+password/login, or packaging implementation.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
@@ -64,6 +68,14 @@ Overlay launch paths read local
 `alternative_actions` from settings/onboarding and pass them into the pause
 overlay. Missing, empty, malformed, or unreadable actions fall back to default
 action cards.
+
+`--trigger-url` is current local uncommitted v0.2 prototype functionality. It
+classifies a user-supplied URL/domain/string against the local placeholder risk
+list (`risk.example`, `blocked.example`, `relapse.example`). Matching inputs
+record a local `manual_url_trigger` friction event. Non-matches and malformed
+inputs do not record events or open the overlay. `--trigger-url --show-overlay`
+delegates to the existing overlay launch path and uses saved alternative
+actions when available.
 
 Manual UI smoke test: `PASS` with non-blocking polish notes.
 
@@ -92,7 +104,7 @@ Known non-blocking polish notes:
 - overall UI needs visual polish later, but this does not block v0.1 alpha
 
 Latest committed docs checkpoint:
-`b175e75 docs: plan Windows packaging path`.
+`1717458 docs: plan local trigger MVP for v0.2`.
 
 README/release polish for v0.1 alpha was committed in
 `c812f41 docs: polish README for v0.1 alpha`.
@@ -102,11 +114,13 @@ The v0.1 alpha release checklist is committed current documentation at
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.
 
-Next recommended task: `feat: add local URL/domain trigger prototype`.
+Next recommended task: Expand local trigger configuration / editable local risk
+list.
 
 ## Explicitly Out Of Scope
 
 - content detection or content classification
+- automatic content blocking
 - DNS interception
 - screenshot capture
 - browser monitoring or browser history scraping

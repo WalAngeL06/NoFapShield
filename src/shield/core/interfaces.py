@@ -9,6 +9,7 @@ __all__ = ["FrictionEvent", "TriggerSource"]
 
 class TriggerSource(str, Enum):
     DEMO = "demo"
+    MANUAL_URL = "manual_url_trigger"
 
 
 @dataclass(frozen=True)

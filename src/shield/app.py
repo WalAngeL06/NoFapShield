@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
+from datetime import datetime, timezone
+import uuid
 
-from shield.core import Config, FrictionEvent, Orchestrator
+from shield.core import Config, FrictionEvent, Orchestrator, TriggerSource
 from shield.db import EventStore
+from shield.trigger import DEFAULT_RISK_DOMAINS, extract_domain, match_trigger, normalize_candidate
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -29,6 +32,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--show-overlay",
         action="store_true",
         help="launch the pause overlay after --demo-trigger records its event",
+    )
+    parser.add_argument(
+        "--trigger-url",
+        default=None,
+        help="classify a supplied URL/domain against the local prototype risk list",
     )
     return parser
 
@@ -125,11 +133,74 @@ def _run_demo_trigger(config: Config, db_path: str, show_overlay: bool = False) 
     return _run_overlay_screen(db_path)
 
 
+def _print_trigger_invalid(candidate: str) -> None:
+    print("shield.trigger_url=ok")
+    print("trigger=invalid")
+    print(f"candidate={candidate}")
+
+
+def _print_trigger_no_match(candidate_domain: str) -> None:
+    print("shield.trigger_url=ok")
+    print("trigger=no_match")
+    print(f"candidate={candidate_domain}")
+
+
+def _print_trigger_match(event: FrictionEvent, event_id: int, match) -> None:
+    print("shield.trigger_url=ok")
+    print("trigger=matched")
+    print(f"candidate={match.candidate_domain}")
+    print(f"matched_domain={match.matched_domain}")
+    print(f"event_id={event_id}")
+    print(f"session_id={event.session_id}")
+    print(f"source={event.source.value}")
+    print(f"reason={event.reason}")
+
+
+def _run_url_trigger(
+    config: Config,
+    db_path: str,
+    candidate: str,
+    show_overlay: bool = False,
+) -> int:
+    normalized_candidate = normalize_candidate(candidate) or ""
+    candidate_domain = extract_domain(candidate)
+    if candidate_domain is None:
+        _print_trigger_invalid(normalized_candidate)
+        return 0
+
+    match = match_trigger(candidate, DEFAULT_RISK_DOMAINS)
+    if match is None:
+        _print_trigger_no_match(candidate_domain)
+        return 0
+
+    event = FrictionEvent(
+        source=TriggerSource.MANUAL_URL,
+        triggered_at=datetime.now(timezone.utc),
+        session_id=str(uuid.uuid4()),
+        score=config.demo_score,
+        threshold_at_trigger=config.trigger_threshold,
+        reason=f"local URL/domain trigger matched {match.matched_domain}",
+    )
+    with EventStore(db_path) as store:
+        event_id = store.record_event(event)
+
+    _print_trigger_match(event, event_id, match)
+    if not show_overlay:
+        return 0
+
+    print("overlay=launched")
+    return _run_overlay_screen(db_path)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.show_overlay and not args.demo_trigger:
-        parser.error("--show-overlay requires --demo-trigger")
+    if args.demo_trigger and args.trigger_url is not None:
+        parser.error("--demo-trigger cannot be used with --trigger-url")
+    if args.trigger_url is not None and args.screen is not None:
+        parser.error("--trigger-url cannot be used with --screen")
+    if args.show_overlay and not (args.demo_trigger or args.trigger_url is not None):
+        parser.error("--show-overlay requires --demo-trigger or --trigger-url")
     if args.show_overlay and args.screen is not None:
         parser.error("--show-overlay cannot be used with --screen")
 
@@ -148,6 +219,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.demo_trigger:
         return _run_demo_trigger(config=config, db_path=db_path, show_overlay=args.show_overlay)
+    if args.trigger_url is not None:
+        return _run_url_trigger(
+            config=config,
+            db_path=db_path,
+            candidate=args.trigger_url,
+            show_overlay=args.show_overlay,
+        )
 
     return _run_default_screen(db_path)
 

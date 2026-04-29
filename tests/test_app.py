@@ -111,6 +111,134 @@ def test_demo_trigger_show_overlay_records_event_and_delegates(tmp_path, capsys,
     assert row["reason"] == parsed["reason"]
 
 
+def test_trigger_url_no_match_does_not_record_or_open_overlay(tmp_path, capsys, monkeypatch):
+    db_path = tmp_path / "trigger.db"
+    overlay_calls: list[str | None] = []
+
+    def fake_overlay(db_path=None) -> int:
+        overlay_calls.append(db_path)
+        return 99
+
+    monkeypatch.setattr("shield.app._run_overlay_screen", fake_overlay)
+
+    result = main(["--trigger-url", "safe.example", "--show-overlay", "--db-path", str(db_path)])
+
+    output = capsys.readouterr().out
+    parsed = _parse_output(output)
+    assert result == 0
+    assert parsed["shield.trigger_url"] == "ok"
+    assert parsed["trigger"] == "no_match"
+    assert parsed["candidate"] == "safe.example"
+    assert "overlay" not in parsed
+    assert overlay_calls == []
+
+    with EventStore(db_path) as store:
+        assert store.count_events() == 0
+
+
+def test_trigger_url_match_records_event(tmp_path, capsys, monkeypatch):
+    db_path = tmp_path / "trigger.db"
+    overlay_calls: list[str | None] = []
+
+    def fake_overlay(db_path=None) -> int:
+        overlay_calls.append(db_path)
+        return 99
+
+    monkeypatch.setattr("shield.app._run_overlay_screen", fake_overlay)
+
+    result = main(["--trigger-url", "https://Sub.Risk.Example/path", "--db-path", str(db_path)])
+
+    output = capsys.readouterr().out
+    parsed = _parse_output(output)
+    assert result == 0
+    assert parsed["shield.trigger_url"] == "ok"
+    assert parsed["trigger"] == "matched"
+    assert parsed["candidate"] == "sub.risk.example"
+    assert parsed["matched_domain"] == "risk.example"
+    assert parsed["event_id"] == "1"
+    assert parsed["source"] == "manual_url_trigger"
+    assert parsed["reason"] == "local URL/domain trigger matched risk.example"
+    assert parsed["session_id"]
+    assert "overlay" not in parsed
+    assert overlay_calls == []
+
+    with EventStore(db_path) as store:
+        rows = store.list_events()
+    assert len(rows) == 1
+    assert rows[0]["session_id"] == parsed["session_id"]
+    assert rows[0]["source"] == "manual_url_trigger"
+    assert rows[0]["reason"] == "local URL/domain trigger matched risk.example"
+
+
+def test_trigger_url_match_show_overlay_delegates_with_saved_actions(
+    tmp_path,
+    capsys,
+    monkeypatch,
+):
+    db_path = tmp_path / "trigger.db"
+    with EventStore(db_path) as store:
+        store.set_setting("alternative_actions", ["Yuru", "Su ic"])
+    received_actions: list[list[str] | None] = []
+
+    def fake_overlay(*, alternative_actions=None, countdown_seconds=15) -> int:
+        del countdown_seconds
+        received_actions.append(alternative_actions)
+        return 17
+
+    monkeypatch.setattr("shield.ui.blur_overlay.run_overlay", fake_overlay)
+
+    result = main(["--trigger-url", "risk.example", "--show-overlay", "--db-path", str(db_path)])
+
+    output = capsys.readouterr().out
+    parsed = _parse_output(output)
+    assert result == 17
+    assert parsed["trigger"] == "matched"
+    assert parsed["overlay"] == "launched"
+    assert received_actions == [["Yuru", "Su ic"]]
+
+    with EventStore(db_path) as store:
+        assert store.count_events() == 1
+
+
+def test_trigger_url_invalid_input_is_safe_no_match(tmp_path, capsys, monkeypatch):
+    db_path = tmp_path / "trigger.db"
+    overlay_calls: list[str | None] = []
+    monkeypatch.setattr(
+        "shield.app._run_overlay_screen",
+        lambda db_path=None: overlay_calls.append(db_path) or 99,
+    )
+
+    result = main(["--trigger-url", "not a url", "--show-overlay", "--db-path", str(db_path)])
+
+    output = capsys.readouterr().out
+    parsed = _parse_output(output)
+    assert result == 0
+    assert parsed["shield.trigger_url"] == "ok"
+    assert parsed["trigger"] == "invalid"
+    assert parsed["candidate"] == "not a url"
+    assert "overlay" not in parsed
+    assert overlay_calls == []
+
+    with EventStore(db_path) as store:
+        assert store.count_events() == 0
+
+
+def test_trigger_url_with_screen_errors(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--trigger-url", "risk.example", "--screen", "dashboard"])
+
+    assert exc.value.code == 2
+    assert "--trigger-url cannot be used with --screen" in capsys.readouterr().err
+
+
+def test_trigger_url_with_screen_and_show_overlay_errors(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--trigger-url", "risk.example", "--screen", "dashboard", "--show-overlay"])
+
+    assert exc.value.code == 2
+    assert "--trigger-url cannot be used with --screen" in capsys.readouterr().err
+
+
 def test_show_overlay_without_demo_trigger_errors(capsys):
     with pytest.raises(SystemExit) as exc:
         main(["--show-overlay"])

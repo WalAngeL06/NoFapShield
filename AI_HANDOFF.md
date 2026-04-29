@@ -10,17 +10,17 @@ This is the fast-start summary for the next AI assistant.
 - Release target commit:
   `3aa3980 chore: refresh memory docs after release checklist commit`
 - Latest known committed docs checkpoint:
-  `b175e75 docs: plan Windows packaging path`
+  `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known committed product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
-- Current tests: `91 passed`
+- Current tests: `113 passed`
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current local docs task: v0.2 local trigger MVP planning in
-  `docs/local-trigger-mvp-v0.2.md`
+- Current local product task: v0.2 manual local URL/domain trigger prototype,
+  pending user review/commit.
 
 ## What Exists Now
 
@@ -34,6 +34,9 @@ This is the fast-start summary for the next AI assistant.
 - default startup routing (`python -m shield.app`)
 - overlay action cards use saved local `alternative_actions`
 - local SQLite event/check-in/settings store
+- manual local URL/domain trigger prototype (`--trigger-url`)
+- local placeholder trigger risk list: `risk.example`, `blocked.example`,
+  `relapse.example`
 
 ## What Is Not Present
 
@@ -52,7 +55,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-`feat: add local URL/domain trigger prototype`
+Expand local trigger configuration / editable local risk list.
 
 ## Handoff Protocol
 
@@ -96,8 +99,11 @@ Decision history rule: "If a decision changes or a previous decision is reversed
   `Shield v0.1.0-alpha — Local-only pause layer MVP`
 - `cffb7f9 docs: record v0.1 alpha release`
 - `b175e75 docs: plan Windows packaging path`
-- Local trigger MVP planning for v0.2 is being documented locally; packaging,
-  installer work, and UI polish remain later work.
+- `1717458 docs: plan local trigger MVP for v0.2`
+- Local URL/domain trigger prototype for v0.2 is implemented locally and pending
+  user review/commit. It is manual/CLI-only and does not add browser
+  monitoring, DNS/proxy, screenshot capture, network calls, services,
+  hardening, password/login, or packaging.
 
 ## Manual UI Smoke Notes
 

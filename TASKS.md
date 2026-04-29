@@ -5,13 +5,13 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `91 passed`
+- Tests passing: `113 passed`
 - Published release:
   `v0.1.0-alpha` / `Shield v0.1.0-alpha — Local-only pause layer MVP`
 - Release target commit:
   `3aa3980 chore: refresh memory docs after release checklist commit`
 - Latest known committed release docs checkpoint:
-  `b175e75 docs: plan Windows packaging path`
+  `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
@@ -40,8 +40,19 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-Local trigger MVP planning for v0.2 is the current local documentation task:
+Local URL/domain trigger prototype for v0.2 is implemented locally and pending
+user review/commit:
 
+- `src/shield/trigger.py`
+- `src/shield/app.py`
+- `src/shield/core/interfaces.py`
+- `src/shield/db/__init__.py`
+- `tests/test_trigger.py`
+- `tests/test_app.py`
+- `tests/conftest.py`
+- `pyproject.toml`
+- `README.md`
+- `ARCHITECTURE.md`
 - `docs/local-trigger-mvp-v0.2.md`
 - `STATUS.md`
 - `TASKS.md`
@@ -49,11 +60,12 @@ Local trigger MVP planning for v0.2 is the current local documentation task:
 
 ## Next Recommended Tasks
 
-1. `feat: add local URL/domain trigger prototype`.
-2. Later: Add PyInstaller one-folder build script/spec.
-3. Later: installer planning after raw executable build is stable.
-4. Later: UI visual polish.
-5. Later: optional browser extension or URL watcher evaluation.
+1. Expand local trigger configuration / editable local risk list.
+2. Later: Add allowlist/false-positive handling.
+3. Later: Add PyInstaller one-folder build script/spec.
+4. Later: installer planning after raw executable build is stable.
+5. Later: UI visual polish.
+6. Later: optional browser extension or URL watcher evaluation.
 
 ## Known Non-Blocking Polish Notes
 

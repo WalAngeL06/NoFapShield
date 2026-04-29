@@ -1,9 +1,16 @@
 # Local Trigger MVP Plan For v0.2
 
 This document defines the safest small step from Shield v0.1's manual/demo
-trigger flow to a real local trigger foundation. It is planning only. It does
-not implement detection, monitoring, blocking, DNS interception, browser
-watching, networking, services, or hardening.
+trigger flow to a real local trigger foundation. It started as the v0.2 MVP
+plan and now also records the current local prototype status. The implemented
+prototype remains manual/CLI-only and does not add detection, monitoring,
+blocking, DNS interception, browser watching, networking, services, or
+hardening.
+
+Implementation status: the first manual/CLI local URL/domain trigger prototype
+has been added locally on `rebuild/v0-clean` and is pending user review/commit.
+It uses placeholder local risk domains only and remains manual, local-only, and
+non-monitoring.
 
 ## 1. Problem Statement
 
@@ -187,4 +194,4 @@ Add tests for:
 
 ## 11. Recommended Next Implementation Task
 
-`feat: add local URL/domain trigger prototype`
+Expand local trigger configuration / editable local risk list.
