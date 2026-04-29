@@ -34,6 +34,10 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
+Current local documentation task: Windows packaging / installer planning.
+The plan is being added at `docs/windows-packaging-plan.md`; it is planning
+only and does not add packaging implementation.
+
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
 (`19ec0c8`), onboarding (`caa9356`), default startup flow (`d9ce5d4`), and
@@ -87,7 +91,7 @@ Known non-blocking polish notes:
 - overall UI needs visual polish later, but this does not block v0.1 alpha
 
 Latest committed docs checkpoint:
-`aa69ee6 docs: add v0.1 alpha release checklist`.
+`cffb7f9 docs: record v0.1 alpha release`.
 
 README/release polish for v0.1 alpha was committed in
 `c812f41 docs: polish README for v0.1 alpha`.
@@ -97,7 +101,7 @@ The v0.1 alpha release checklist is committed current documentation at
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.
 
-Next recommended task: Plan Windows packaging / installer for post-release.
+Next recommended task: Add PyInstaller one-folder build script/spec.
 
 ## Explicitly Out Of Scope
 

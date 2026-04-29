@@ -189,7 +189,10 @@ tree is clean, the branch is pushed, and final verification is complete.
 
 ## 9. Next After Release
 
-- Windows packaging / installer planning.
+- Windows packaging / installer planning is tracked in
+  `docs/windows-packaging-plan.md`.
+- Next implementation task: Add PyInstaller one-folder build script/spec.
+- Installer planning comes after a raw executable build is stable.
 - UI visual polish.
 - Optional local detection later.
 - Optional DNS/domain heuristics later.

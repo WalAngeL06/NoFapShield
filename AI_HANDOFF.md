@@ -10,7 +10,7 @@ This is the fast-start summary for the next AI assistant.
 - Release target commit:
   `3aa3980 chore: refresh memory docs after release checklist commit`
 - Latest known committed docs checkpoint:
-  `aa69ee6 docs: add v0.1 alpha release checklist`
+  `cffb7f9 docs: record v0.1 alpha release`
 - Latest known committed product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
@@ -19,6 +19,8 @@ This is the fast-start summary for the next AI assistant.
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
+- Current local docs task: Windows packaging / installer planning in
+  `docs/windows-packaging-plan.md`
 
 ## What Exists Now
 
@@ -47,7 +49,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Plan Windows packaging / installer for post-release.
+Add PyInstaller one-folder build script/spec.
 
 ## Handoff Protocol
 
@@ -89,6 +91,9 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `3aa3980 chore: refresh memory docs after release checklist commit`
 - `v0.1.0-alpha` tag pushed and GitHub Release published as
   `Shield v0.1.0-alpha — Local-only pause layer MVP`
+- `cffb7f9 docs: record v0.1 alpha release`
+- Windows packaging / installer planning is being documented locally; installer
+  work remains later, after a raw executable build is stable.
 
 ## Manual UI Smoke Notes
 

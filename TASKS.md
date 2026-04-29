@@ -11,7 +11,7 @@ This file is the single source of truth for current and next work.
 - Release target commit:
   `3aa3980 chore: refresh memory docs after release checklist commit`
 - Latest known committed release docs checkpoint:
-  `aa69ee6 docs: add v0.1 alpha release checklist`
+  `cffb7f9 docs: record v0.1 alpha release`
 - Latest known product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
@@ -35,17 +35,25 @@ This file is the single source of truth for current and next work.
 - `3aa3980 chore: refresh memory docs after release checklist commit`
 - `v0.1.0-alpha` tag pushed and GitHub Release published as a pre-release /
   alpha / developer preview.
+- `cffb7f9 docs: record v0.1 alpha release`
 
 ## Current Task
 
-No active task.
+Windows packaging / installer planning is the current local documentation task:
+
+- `docs/windows-packaging-plan.md`
+- `STATUS.md`
+- `TASKS.md`
+- `AI_HANDOFF.md`
+- `docs/release-checklist-v0.1.md`
 
 ## Next Recommended Tasks
 
-1. Plan Windows packaging / installer for post-release.
-2. Later: UI visual polish.
-3. Later: optional local detection.
-4. Later: optional DNS/domain heuristics.
+1. Add PyInstaller one-folder build script/spec.
+2. Later: installer planning after raw executable build is stable.
+3. Later: UI visual polish.
+4. Later: optional local detection.
+5. Later: optional DNS/domain heuristics.
 
 ## Known Non-Blocking Polish Notes
 
