@@ -74,11 +74,13 @@ Known non-blocking polish notes:
 - dashboard is functional but could be more polished
 - overall UI needs visual polish later, but this does not block v0.1 alpha
 
-README/release polish for v0.1 alpha has been completed locally in the working
-tree.
+Latest committed docs checkpoint:
+`aa69ee6 docs: add v0.1 alpha release checklist`.
 
-Release checklist preparation for v0.1 alpha is the current local documentation
-change, pending user review and commit. The checklist lives at
+README/release polish for v0.1 alpha was committed in
+`c812f41 docs: polish README for v0.1 alpha`.
+
+The v0.1 alpha release checklist is committed current documentation at
 `docs/release-checklist-v0.1.md` and defines the release target, verification
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.

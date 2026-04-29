@@ -5,6 +5,8 @@ This is the fast-start summary for the next AI assistant.
 ## Last Known State
 
 - Last known branch: `rebuild/v0-clean`
+- Latest known committed docs checkpoint:
+  `aa69ee6 docs: add v0.1 alpha release checklist`
 - Latest known committed product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
@@ -34,11 +36,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-README/release polish for v0.1 alpha is completed locally. Release checklist
-documentation for v0.1 alpha has been prepared locally and is pending user
-review/commit.
-
-Current recommended next task: Final v0.1 alpha verification and tag.
+Final v0.1 alpha verification and tag.
 
 ## Handoff Protocol
 
@@ -75,9 +73,8 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `d9ce5d4 feat: add default startup flow`
 - `223105a feat: use saved alternative actions in overlay`
 - Manual UI smoke test: `PASS`; no P0 blocker found.
-- README/release polish for v0.1 alpha completed locally.
-- Release checklist documentation prepared locally:
-  `docs/release-checklist-v0.1.md`
+- `c812f41 docs: polish README for v0.1 alpha`
+- `aa69ee6 docs: add v0.1 alpha release checklist`
 
 ## Manual UI Smoke Notes
 

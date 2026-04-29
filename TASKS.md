@@ -6,7 +6,9 @@ This file is the single source of truth for current and next work.
 
 - Working branch: `rebuild/v0-clean`
 - Tests passing: `91 passed`
-- Latest known committed product checkpoint:
+- Latest known committed docs checkpoint:
+  `aa69ee6 docs: add v0.1 alpha release checklist`
+- Latest known product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
@@ -24,17 +26,12 @@ This file is the single source of truth for current and next work.
 - `d9ce5d4 feat: add default startup flow`
 - `223105a feat: use saved alternative actions in overlay`
 - Manual UI smoke test: `PASS` with non-blocking polish notes.
-- README/release polish for v0.1 alpha completed locally.
+- `c812f41 docs: polish README for v0.1 alpha`
+- `aa69ee6 docs: add v0.1 alpha release checklist`
 
 ## Current Task
 
-Release checklist documentation for v0.1 alpha is prepared locally and pending
-user review/commit:
-
-- `docs/release-checklist-v0.1.md`
-- `STATUS.md`
-- `TASKS.md`
-- `AI_HANDOFF.md`
+No active task.
 
 ## Next Recommended Tasks
 
