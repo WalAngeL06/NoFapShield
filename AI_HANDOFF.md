@@ -12,7 +12,7 @@ This is the fast-start summary for the next AI assistant.
 - Latest known committed docs checkpoint:
   `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known committed product checkpoint:
-  `c8e8c4a feat: add local URL/domain trigger prototype`
+  `712e62f feat: add editable local trigger risk list`
 - Latest known test/config checkpoint:
   `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
@@ -21,8 +21,7 @@ This is the fast-start summary for the next AI assistant.
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current local product task: expand local trigger configuration / editable
-  local risk list, pending user review/commit.
+- Current task: No active task.
 
 ## What Exists Now
 
@@ -106,16 +105,17 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `1717458 docs: plan local trigger MVP for v0.2`
 - `c8e8c4a feat: add local URL/domain trigger prototype`
 - `b76abd2 test: use ignored pytest basetemp`
+- `712e62f feat: add editable local trigger risk list`
 - Local URL/domain trigger prototype for v0.2 is committed functionality. It is
   manual/CLI-only and does not add automatic browser monitoring, DNS/proxy,
   screenshot capture, network calls, cloud sync, telemetry, SMTP/email sending,
   services, NSSM, uninstall protection, hard process protection,
   password/login, packaging implementation, or complete blocking/porn
   detection claims.
-- Local editable risk-list expansion is implemented locally and pending user
-  review/commit. It stores user-owned domains in local SQLite setting
-  `trigger_risk_domains`, adds `--list-risk-domains` and `--set-risk-domains`,
-  preserves placeholder defaults as fallback, and ships no real adult domains.
+- Local editable risk-list expansion is committed functionality. It stores
+  user-owned domains in local SQLite setting `trigger_risk_domains`, adds
+  `--list-risk-domains` and `--set-risk-domains`, preserves placeholder
+  defaults as fallback, and ships no real adult domains.
 
 ## Manual UI Smoke Notes
 

@@ -13,7 +13,7 @@ This file is the single source of truth for current and next work.
 - Latest known committed release docs checkpoint:
   `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known product checkpoint:
-  `c8e8c4a feat: add local URL/domain trigger prototype`
+  `712e62f feat: add editable local trigger risk list`
 - Latest known test/config checkpoint:
   `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
@@ -42,22 +42,11 @@ This file is the single source of truth for current and next work.
 - `1717458 docs: plan local trigger MVP for v0.2`
 - `c8e8c4a feat: add local URL/domain trigger prototype`
 - `b76abd2 test: use ignored pytest basetemp`
+- `712e62f feat: add editable local trigger risk list`
 
 ## Current Task
 
-Expand local trigger configuration / editable local risk list is implemented
-locally and pending user review/commit:
-
-- `src/shield/trigger.py`
-- `src/shield/app.py`
-- `tests/test_trigger.py`
-- `tests/test_app.py`
-- `README.md`
-- `ARCHITECTURE.md`
-- `docs/local-trigger-mvp-v0.2.md`
-- `STATUS.md`
-- `TASKS.md`
-- `AI_HANDOFF.md`
+No active task.
 
 ## Next Recommended Tasks
 

@@ -38,11 +38,10 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current local product task: expand local trigger configuration / editable local
-risk list.
+Current task: No active task.
 
 Latest known product checkpoint:
-`c8e8c4a feat: add local URL/domain trigger prototype`.
+`712e62f feat: add editable local trigger risk list`.
 
 Latest known test/config checkpoint:
 `b76abd2 test: use ignored pytest basetemp`.
@@ -56,19 +55,19 @@ SMTP/email sending, services, NSSM, uninstall protection, hard process
 protection, password/login, packaging implementation, or complete
 blocking/porn detection claims.
 
-The current local uncommitted v0.2 task expands trigger configuration so
+The editable local risk-list expansion is committed functionality.
 `--trigger-url` can use a user-owned local risk list from the SQLite setting
 `trigger_risk_domains`. `--list-risk-domains` prints the active list, and
-`--set-risk-domains` stores valid normalized domains without wiping the
-previous list when the input has no valid domains. Placeholder defaults
-(`risk.example`, `blocked.example`, `relapse.example`) remain the fallback, and
-no real adult domains are shipped.
+`--set-risk-domains` stores valid normalized domains without wiping the previous
+list when the input has no valid domains. Placeholder defaults (`risk.example`,
+`blocked.example`, `relapse.example`) remain the fallback, and no real adult
+domains are shipped.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
 (`19ec0c8`), onboarding (`caa9356`), default startup flow (`d9ce5d4`), and
-saved overlay actions (`223105a`), and manual local URL/domain trigger
-prototype (`c8e8c4a`).
+saved overlay actions (`223105a`), manual local URL/domain trigger prototype
+(`c8e8c4a`), and editable local trigger risk list (`712e62f`).
 The latest known fix is `9753375 fix: recognize today's dashboard checkin`.
 
 `--demo-trigger --show-overlay` is current committed functionality. It records
@@ -99,9 +98,9 @@ inputs do not record events or open the overlay. `--trigger-url --show-overlay`
 delegates to the existing overlay launch path and uses saved alternative
 actions when available.
 
-The current local editable risk-list expansion updates `--trigger-url` to use
-custom local settings when valid. Invalid, empty, missing, or malformed custom
-lists fall back to the placeholder defaults.
+The editable risk-list expansion updates `--trigger-url` to use custom local
+settings when valid. Invalid, empty, missing, or malformed custom lists fall
+back to the placeholder defaults.
 
 Manual UI smoke test: `PASS` with non-blocking polish notes.
 

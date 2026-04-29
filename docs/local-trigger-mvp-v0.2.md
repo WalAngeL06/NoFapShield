@@ -14,11 +14,13 @@ configuration was committed as `b76abd2 test: use ignored pytest basetemp`.
 The trigger prototype uses placeholder local risk domains only and remains
 manual, local-only, and non-monitoring.
 
-Current local implementation status: editable local risk-list configuration is
-implemented locally and pending user review/commit. Custom domains are stored in
-the local SQLite setting `trigger_risk_domains`. `--list-risk-domains` prints
-the active local list, and `--set-risk-domains` stores valid normalized domains.
-Placeholder defaults remain the fallback, and no real adult domains are shipped.
+Current implementation status: editable local risk-list configuration is
+committed on `rebuild/v0-clean` as
+`712e62f feat: add editable local trigger risk list`. Custom domains are stored
+in the local SQLite setting `trigger_risk_domains`. `--list-risk-domains`
+prints the active local list, and `--set-risk-domains` stores valid normalized
+domains. Placeholder defaults remain the fallback, and no real adult domains
+are shipped.
 
 ## 1. Problem Statement
 
