@@ -34,6 +34,13 @@ Trigger settings are durable by default: when `--db-path` is omitted, Shield
 resolves a user-local SQLite database, while `--db-path` remains available for
 isolated tests and development runs.
 
+Current local implementation status: Settings screen editing for local risk
+domains and allow domains is implemented locally and pending user review/commit.
+The Settings screen saves normalized user-owned local lists through
+`trigger_risk_domains` and `trigger_allow_domains`. Empty custom risk-domain
+input falls back to placeholder defaults at trigger time. Empty allow-domain
+input leaves the allowlist empty.
+
 ## 1. Problem Statement
 
 - v0.1 proves the local UI, data, and overlay flow.
@@ -172,6 +179,7 @@ classification step.
 - Store a user-owned local allowlist in `trigger_allow_domains`.
 - Check allow domains before risk domains for local false-positive handling.
 - Add CLI helpers to list and set the local allowlist.
+- Add Settings screen editors for local risk domains and allow domains.
 - Persist trigger settings in a user-owned local SQLite database by default,
   with `--db-path` as an explicit override for tests and development.
 - Consider how existing detection-sensitivity placeholder should map to local
@@ -230,6 +238,9 @@ Add tests for:
 - CLI allowlist set does not wipe an existing valid list when no valid domains
   are provided.
 - Allowlist exact and subdomain matches override risk matches.
+- Settings screen loads and saves local risk/allow domain lists without showing
+  placeholder defaults as user-owned values.
+- Settings screen empty custom risk input preserves fallback default behavior.
 - Default no-`--db-path` risk and allow settings persist across separate CLI
   invocations.
 - Explicit `--db-path` continues to isolate test and development databases.
@@ -254,4 +265,4 @@ Add tests for:
 
 ## 11. Recommended Next Implementation Task
 
-Add settings UI for local risk/allow list editing.
+Manual UI smoke test for settings risk/allow list editing.

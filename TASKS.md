@@ -5,7 +5,7 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `170 passed`
+- Tests passing: `175 passed`
 - Published release:
   `v0.1.0-alpha` / `Shield v0.1.0-alpha — Local-only pause layer MVP`
 - Release target commit:
@@ -47,11 +47,21 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Add settings UI for local risk/allow list editing is implemented locally and
+pending user review/commit:
+
+- `src/shield/ui/settings.py`
+- `tests/test_ui/test_settings.py`
+- `README.md`
+- `ARCHITECTURE.md`
+- `docs/local-trigger-mvp-v0.2.md`
+- `STATUS.md`
+- `TASKS.md`
+- `AI_HANDOFF.md`
 
 ## Next Recommended Tasks
 
-1. Add settings UI for local risk/allow list editing.
+1. Manual UI smoke test for settings risk/allow list editing.
 2. Later: Add PyInstaller one-folder build script/spec.
 3. Later: installer planning after raw executable build is stable.
 4. Later: UI visual polish.

@@ -26,7 +26,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `170 passed`.
+Current tests: `175 passed`.
 
 Published release: `v0.1.0-alpha`.
 
@@ -40,7 +40,7 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current task: No active task.
+Current local product task: add settings UI for local risk/allow list editing.
 
 Latest known product checkpoint:
 `9ee4fc7 feat: add local trigger allowlist`.
@@ -74,6 +74,13 @@ risk-domain matches locally and do not record friction events or open the
 overlay. When `--db-path` is omitted, the app resolves a durable user-local
 SQLite database for trigger settings and events; `--db-path` still overrides
 the database path for tests and development.
+
+The current local uncommitted v0.2 task adds Settings screen editors for local
+risk domains and allow domains. The fields save user-owned, normalized local
+lists through `trigger_risk_domains` and `trigger_allow_domains`. Empty or
+all-invalid custom risk-domain input saves an empty custom list so trigger
+behavior falls back to placeholder defaults. Empty or all-invalid allow-domain
+input saves an empty allowlist.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
@@ -159,7 +166,8 @@ The v0.1 alpha release checklist is committed current documentation at
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.
 
-Next recommended task: Add settings UI for local risk/allow list editing.
+Next recommended task: Manual UI smoke test for settings risk/allow list
+editing.
 
 ## Explicitly Out Of Scope
 

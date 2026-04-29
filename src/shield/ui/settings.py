@@ -21,12 +21,20 @@ from PyQt6.QtWidgets import (
 
 from shield.core import Config
 from shield.db import EventStore
+from shield.trigger import (
+    ALLOW_DOMAINS_SETTING_KEY,
+    RISK_DOMAINS_SETTING_KEY,
+    parse_allow_domains,
+    parse_risk_domains,
+)
 
 SETTING_KEYS = (
     "goal_text",
     "alternative_actions",
     "accountability_email",
     "detection_sensitivity",
+    RISK_DOMAINS_SETTING_KEY,
+    ALLOW_DOMAINS_SETTING_KEY,
 )
 DEFAULT_SENSITIVITY = 0.7
 
@@ -105,6 +113,12 @@ class SettingsWindow(QWidget):
             "alternative_actions": _parse_actions(self._actions_edit.toPlainText()),
             "accountability_email": self._email_edit.text().strip(),
             "detection_sensitivity": self._sensitivity_slider.value() / 100,
+            RISK_DOMAINS_SETTING_KEY: list(
+                parse_risk_domains(self._risk_domains_edit.toPlainText(), fallback=())
+            ),
+            ALLOW_DOMAINS_SETTING_KEY: list(
+                parse_allow_domains(self._allow_domains_edit.toPlainText())
+            ),
         }
 
     def _load_values(self, values: dict[str, Any]) -> None:
@@ -113,6 +127,14 @@ class SettingsWindow(QWidget):
         if isinstance(actions, list):
             self._actions_edit.setPlainText("\n".join(str(a) for a in actions))
         self._email_edit.setText(str(values.get("accountability_email", "") or ""))
+        self._risk_domains_edit.setPlainText(
+            _format_domain_lines(
+                parse_risk_domains(values.get(RISK_DOMAINS_SETTING_KEY), fallback=())
+            )
+        )
+        self._allow_domains_edit.setPlainText(
+            _format_domain_lines(parse_allow_domains(values.get(ALLOW_DOMAINS_SETTING_KEY)))
+        )
         sensitivity = values.get("detection_sensitivity", DEFAULT_SENSITIVITY)
         try:
             slider_value = int(round(float(sensitivity) * 100))
@@ -144,6 +166,8 @@ class SettingsWindow(QWidget):
         layout.addWidget(self._build_actions_card())
         layout.addWidget(self._build_email_card())
         layout.addWidget(self._build_sensitivity_card())
+        layout.addWidget(self._build_risk_domains_card())
+        layout.addWidget(self._build_allow_domains_card())
         layout.addLayout(self._build_save_row())
         layout.addStretch(1)
 
@@ -253,6 +277,45 @@ class SettingsWindow(QWidget):
         col.addWidget(self._sensitivity_helper)
         return card
 
+    def _build_risk_domains_card(self) -> QFrame:
+        card = _make_card()
+        col = _card_layout(card)
+
+        col.addWidget(_section_label("Local risk domains"))
+        self._risk_domains_helper = _helper_label(
+            "One domain per line. Local-only. Used by manual --trigger-url. "
+            "No real adult domains are included by default. Empty custom list "
+            "falls back to placeholder defaults."
+        )
+        col.addWidget(self._risk_domains_helper)
+
+        self._risk_domains_edit = QTextEdit()
+        self._risk_domains_edit.setMinimumHeight(110)
+        self._risk_domains_edit.setFont(_font(14))
+        self._risk_domains_edit.setPlaceholderText("focus.example\nrisk.example")
+        self._risk_domains_edit.setStyleSheet(_text_edit_style())
+        col.addWidget(self._risk_domains_edit)
+        return card
+
+    def _build_allow_domains_card(self) -> QFrame:
+        card = _make_card()
+        col = _card_layout(card)
+
+        col.addWidget(_section_label("Local allow domains"))
+        self._allow_domains_helper = _helper_label(
+            "One safe domain per line. Overrides broader local risk matches. "
+            "Used for false-positive handling. Local-only."
+        )
+        col.addWidget(self._allow_domains_helper)
+
+        self._allow_domains_edit = QTextEdit()
+        self._allow_domains_edit.setMinimumHeight(110)
+        self._allow_domains_edit.setFont(_font(14))
+        self._allow_domains_edit.setPlaceholderText("safe.example.com")
+        self._allow_domains_edit.setStyleSheet(_text_edit_style())
+        col.addWidget(self._allow_domains_edit)
+        return card
+
     def _build_save_row(self) -> QHBoxLayout:
         row = QHBoxLayout()
         row.setSpacing(16)
@@ -286,6 +349,10 @@ class SettingsWindow(QWidget):
 
 def _parse_actions(text: str) -> list[str]:
     return [line.strip() for line in text.splitlines() if line.strip()]
+
+
+def _format_domain_lines(domains: tuple[str, ...]) -> str:
+    return "\n".join(domains)
 
 
 def _make_card() -> QFrame:

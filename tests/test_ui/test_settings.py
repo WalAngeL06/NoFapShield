@@ -44,6 +44,8 @@ def test_settings_window_renders_empty_defaults(qapp):
     assert window._goal_edit.toPlainText() == ""
     assert window._actions_edit.toPlainText() == ""
     assert window._email_edit.text() == ""
+    assert window._risk_domains_edit.toPlainText() == ""
+    assert window._allow_domains_edit.toPlainText() == ""
 
 
 # ---------------------------------------------------------------------------
@@ -59,6 +61,8 @@ def test_settings_window_loads_from_provider(qapp):
         "alternative_actions": ["İki dakika yürüyüş", "Bir bardak su iç"],
         "accountability_email": "partner@example.com",
         "detection_sensitivity": 0.5,
+        "trigger_risk_domains": ["Focus.Example", "bad_domain.test", "rest.example"],
+        "trigger_allow_domains": ["Safe.Example.Com", "bad_domain.test"],
     }
     window = SettingsWindow(get_settings=lambda: stored)
 
@@ -66,6 +70,8 @@ def test_settings_window_loads_from_provider(qapp):
     assert window._actions_edit.toPlainText() == "İki dakika yürüyüş\nBir bardak su iç"
     assert window._email_edit.text() == "partner@example.com"
     assert window._sensitivity_slider.value() == 50
+    assert window._risk_domains_edit.toPlainText() == "focus.example\nrest.example"
+    assert window._allow_domains_edit.toPlainText() == "safe.example.com"
 
 
 def test_settings_window_loads_partial_provider(qapp):
@@ -77,6 +83,34 @@ def test_settings_window_loads_partial_provider(qapp):
     assert window._goal_edit.toPlainText() == "Sadece hedef"
     assert window._actions_edit.toPlainText() == ""
     assert window._email_edit.text() == ""
+    assert window._risk_domains_edit.toPlainText() == ""
+    assert window._allow_domains_edit.toPlainText() == ""
+
+
+def test_settings_window_loads_domain_settings_from_strings(qapp):
+    from shield.ui.settings import SettingsWindow
+
+    stored = {
+        "trigger_risk_domains": "Focus.Example\nrest.example, focus.example",
+        "trigger_allow_domains": "Safe.Example.Com\nrest.example,safe.example.com",
+    }
+    window = SettingsWindow(get_settings=lambda: stored)
+
+    assert window._risk_domains_edit.toPlainText() == "focus.example\nrest.example"
+    assert window._allow_domains_edit.toPlainText() == "safe.example.com\nrest.example"
+
+
+def test_settings_window_loads_invalid_domain_settings_as_empty_text(qapp):
+    from shield.ui.settings import SettingsWindow
+
+    stored = {
+        "trigger_risk_domains": ["bad_domain.test", "not a url"],
+        "trigger_allow_domains": {"domain": "safe.example.com"},
+    }
+    window = SettingsWindow(get_settings=lambda: stored)
+
+    assert window._risk_domains_edit.toPlainText() == ""
+    assert window._allow_domains_edit.toPlainText() == ""
 
 
 # ---------------------------------------------------------------------------
@@ -94,6 +128,8 @@ def test_settings_save_calls_provider_with_form_values(qapp):
     window._actions_edit.setPlainText("Eylem 1\nEylem 2")
     window._email_edit.setText("me@example.com")
     window._sensitivity_slider.setValue(70)
+    window._risk_domains_edit.setPlainText("Focus.Example\nrest.example")
+    window._allow_domains_edit.setPlainText("Safe.Example.Com")
 
     result = window.submit()
 
@@ -104,6 +140,8 @@ def test_settings_save_calls_provider_with_form_values(qapp):
     assert values["alternative_actions"] == ["Eylem 1", "Eylem 2"]
     assert values["accountability_email"] == "me@example.com"
     assert values["detection_sensitivity"] == pytest.approx(0.7)
+    assert values["trigger_risk_domains"] == ["focus.example", "rest.example"]
+    assert values["trigger_allow_domains"] == ["safe.example.com"]
 
 
 def test_settings_save_strips_blank_action_lines(qapp):
@@ -116,6 +154,41 @@ def test_settings_save_strips_blank_action_lines(qapp):
     window.submit()
 
     assert saved[0]["alternative_actions"] == ["Eylem A", "Eylem B"]
+
+
+def test_settings_save_normalizes_drops_invalid_and_dedupes_domains(qapp):
+    from shield.ui.settings import SettingsWindow
+
+    saved: list[dict] = []
+    window = SettingsWindow(save_settings=saved.append)
+
+    window._risk_domains_edit.setPlainText(
+        " Focus.Example \nbad_domain.test\nhttps://focus.example/path\nrest.example"
+    )
+    window._allow_domains_edit.setPlainText(
+        " Safe.Example.Com \nnot a url\nsafe.example.com\nsub.safe.example.com"
+    )
+    window.submit()
+
+    assert saved[0]["trigger_risk_domains"] == ["focus.example", "rest.example"]
+    assert saved[0]["trigger_allow_domains"] == [
+        "safe.example.com",
+        "sub.safe.example.com",
+    ]
+
+
+def test_settings_save_empty_domain_fields_as_empty_lists(qapp):
+    from shield.ui.settings import SettingsWindow
+
+    saved: list[dict] = []
+    window = SettingsWindow(save_settings=saved.append)
+
+    window._risk_domains_edit.setPlainText("bad_domain.test\nnot a url")
+    window._allow_domains_edit.setPlainText("bad_domain.test\nnot a url")
+    window.submit()
+
+    assert saved[0]["trigger_risk_domains"] == []
+    assert saved[0]["trigger_allow_domains"] == []
 
 
 def test_settings_save_shows_success_feedback(qapp):
@@ -151,6 +224,24 @@ def test_settings_detection_slider_marked_as_inactive(qapp):
 
     helper = window._sensitivity_helper.text().lower()
     assert "v0.1" in helper or "aktif değil" in helper
+
+
+def test_settings_trigger_domain_helpers_are_local_only(qapp):
+    from shield.ui.settings import SettingsWindow
+
+    window = SettingsWindow()
+
+    risk_helper = window._risk_domains_helper.text().lower()
+    allow_helper = window._allow_domains_helper.text().lower()
+    assert "one domain per line" in risk_helper
+    assert "local-only" in risk_helper
+    assert "--trigger-url" in risk_helper
+    assert "no real adult domains" in risk_helper
+    assert "placeholder defaults" in risk_helper
+    assert "one safe domain per line" in allow_helper
+    assert "overrides broader local risk matches" in allow_helper
+    assert "false-positive" in allow_helper
+    assert "local-only" in allow_helper
 
 
 # ---------------------------------------------------------------------------

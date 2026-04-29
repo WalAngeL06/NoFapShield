@@ -47,8 +47,11 @@ The prototype:
 - Persists trigger settings in a durable user-owned local SQLite database by
   default; `--db-path` can override the database path for tests and
   development.
+- Lets the Settings screen edit the local risk domains and allow domains.
 - Uses the local allowlist for false-positive handling; allowlisted domains
   override broader local risk-domain matches.
+- Falls back to placeholder risk defaults when the custom local risk list is
+  empty.
 - Uses only safe placeholder domains such as `risk.example` as fallback
   defaults.
 - Ships no real adult domains.
@@ -56,7 +59,7 @@ The prototype:
 - Can delegate to the existing pause overlay when `--show-overlay` is passed.
 - Keeps all data local.
 
-Current automated verification snapshot: `170 passed`.
+Current automated verification snapshot: `175 passed`.
 
 ## What v0.1 Alpha Does Not Include
 
@@ -127,6 +130,10 @@ Local settings:
 ```powershell
 python -m shield.app --screen settings
 ```
+
+The Settings screen can edit local goal text, alternative actions, optional
+local email placeholder, detection-sensitivity placeholder, local risk domains,
+and local allow domains.
 
 Local morning check-in:
 

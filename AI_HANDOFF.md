@@ -17,11 +17,12 @@ This is the fast-start summary for the next AI assistant.
   `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
-- Current tests: `170 passed`
+- Current tests: `175 passed`
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current task: No active task.
+- Current local product task: add settings UI for local risk/allow list
+  editing, pending user review/commit.
 
 ## What Exists Now
 
@@ -41,6 +42,7 @@ This is the fast-start summary for the next AI assistant.
 - local risk-list CLI helpers: `--list-risk-domains` and `--set-risk-domains`
 - local allowlist CLI helpers: `--list-allow-domains` and
   `--set-allow-domains`
+- Settings screen editors for local risk domains and local allow domains
 - default user-local SQLite persistence for trigger settings and events when
   `--db-path` is omitted
 - local placeholder trigger risk list fallback: `risk.example`,
@@ -63,7 +65,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Add settings UI for local risk/allow list editing.
+Manual UI smoke test for settings risk/allow list editing.
 
 ## Handoff Protocol
 
@@ -131,6 +133,11 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - Documented trigger settings commands are durable by default through a
   user-local SQLite database. Explicit `--db-path` still fully controls the
   database path for tests and development.
+- Local Settings screen risk/allow list editing is implemented locally and
+  pending user review/commit. It saves normalized user-owned local lists to
+  `trigger_risk_domains` and `trigger_allow_domains`, keeps empty custom risk
+  input compatible with placeholder fallback defaults, keeps empty allow input
+  as an empty allowlist, and ships no real adult domains.
 
 ## Manual UI Smoke Notes
 

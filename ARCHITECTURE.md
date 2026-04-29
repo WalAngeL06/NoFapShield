@@ -81,13 +81,21 @@ local list in the resolved local SQLite database. The local allowlist is read
 from `trigger_allow_domains`; it has no placeholder defaults and overrides risk
 matches for local false-positive handling. `--list-allow-domains` prints the
 allowlist, and `--set-allow-domains` stores a normalized custom allowlist in the
-same resolved local SQLite database. No real adult domains are shipped. It does
-not monitor browsers, inspect browser history, intercept DNS, capture
-screenshots, call the network, or claim complete blocking or porn detection.
+same resolved local SQLite database. The Settings screen also exposes local
+risk-domain and allow-domain editors backed by the same settings keys. Empty
+custom risk-domain settings fall back to placeholder defaults, while the
+allowlist stays empty unless the user adds domains. No real adult domains are
+shipped. It does not monitor browsers, inspect browser history, intercept DNS,
+capture screenshots, call the network, or claim complete blocking or porn
+detection.
 
 `--screen onboarding` saves goal text, alternative actions, optional local email
 placeholder, and an onboarding completion flag through the local settings store.
 It does not send email.
+
+`--screen settings` saves goal text, alternative actions, optional local email
+placeholder, detection-sensitivity placeholder, local trigger risk domains, and
+local trigger allow domains through the same local settings store.
 
 ## Explicitly Forbidden Current Architecture
 
