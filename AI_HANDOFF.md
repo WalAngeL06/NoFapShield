@@ -10,7 +10,7 @@ This is the fast-start summary for the next AI assistant.
 - Release target commit:
   `3aa3980 chore: refresh memory docs after release checklist commit`
 - Latest known committed docs checkpoint:
-  `cffb7f9 docs: record v0.1 alpha release`
+  `b175e75 docs: plan Windows packaging path`
 - Latest known committed product checkpoint:
   `223105a feat: use saved alternative actions in overlay`
 - Latest known fix:
@@ -19,8 +19,8 @@ This is the fast-start summary for the next AI assistant.
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current local docs task: Windows packaging / installer planning in
-  `docs/windows-packaging-plan.md`
+- Current local docs task: v0.2 local trigger MVP planning in
+  `docs/local-trigger-mvp-v0.2.md`
 
 ## What Exists Now
 
@@ -38,6 +38,8 @@ This is the fast-start summary for the next AI assistant.
 ## What Is Not Present
 
 - content detection
+- automatic content blocking
+- browser monitoring or browser history scraping
 - screenshot capture
 - DNS interception/proxy
 - cloud sync, telemetry, or network calls
@@ -45,11 +47,12 @@ This is the fast-start summary for the next AI assistant.
 - accountability delivery
 - Windows service or NSSM integration
 - uninstall protection or hard process protection
+- password or login flow
 - packaged installer
 
 ## Current Recommended Next Task
 
-Add PyInstaller one-folder build script/spec.
+`feat: add local URL/domain trigger prototype`
 
 ## Handoff Protocol
 
@@ -92,8 +95,9 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `v0.1.0-alpha` tag pushed and GitHub Release published as
   `Shield v0.1.0-alpha — Local-only pause layer MVP`
 - `cffb7f9 docs: record v0.1 alpha release`
-- Windows packaging / installer planning is being documented locally; installer
-  work remains later, after a raw executable build is stable.
+- `b175e75 docs: plan Windows packaging path`
+- Local trigger MVP planning for v0.2 is being documented locally; packaging,
+  installer work, and UI polish remain later work.
 
 ## Manual UI Smoke Notes
 

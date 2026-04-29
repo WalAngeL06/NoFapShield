@@ -189,10 +189,13 @@ tree is clean, the branch is pushed, and final verification is complete.
 
 ## 9. Next After Release
 
+- v0.2 local trigger MVP planning is tracked in
+  `docs/local-trigger-mvp-v0.2.md`.
+- Next implementation task:
+  `feat: add local URL/domain trigger prototype`.
 - Windows packaging / installer planning is tracked in
   `docs/windows-packaging-plan.md`.
-- Next implementation task: Add PyInstaller one-folder build script/spec.
+- Packaging remains later work.
 - Installer planning comes after a raw executable build is stable.
 - UI visual polish.
-- Optional local detection later.
-- Optional DNS/domain heuristics later.
+- Optional browser extension or URL watcher evaluation later.
