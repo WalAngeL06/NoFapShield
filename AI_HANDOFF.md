@@ -12,15 +12,16 @@ This is the fast-start summary for the next AI assistant.
 - Latest known committed docs checkpoint:
   `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known committed product checkpoint:
-  `223105a feat: use saved alternative actions in overlay`
+  `c8e8c4a feat: add local URL/domain trigger prototype`
+- Latest known test/config checkpoint:
+  `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
 - Current tests: `113 passed`
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current local product task: v0.2 manual local URL/domain trigger prototype,
-  pending user review/commit.
+- Current task: No active task.
 
 ## What Exists Now
 
@@ -100,10 +101,14 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `cffb7f9 docs: record v0.1 alpha release`
 - `b175e75 docs: plan Windows packaging path`
 - `1717458 docs: plan local trigger MVP for v0.2`
-- Local URL/domain trigger prototype for v0.2 is implemented locally and pending
-  user review/commit. It is manual/CLI-only and does not add browser
-  monitoring, DNS/proxy, screenshot capture, network calls, services,
-  hardening, password/login, or packaging.
+- `c8e8c4a feat: add local URL/domain trigger prototype`
+- `b76abd2 test: use ignored pytest basetemp`
+- Local URL/domain trigger prototype for v0.2 is committed functionality. It is
+  manual/CLI-only and does not add automatic browser monitoring, DNS/proxy,
+  screenshot capture, network calls, cloud sync, telemetry, SMTP/email sending,
+  services, NSSM, uninstall protection, hard process protection,
+  password/login, packaging implementation, or complete blocking/porn
+  detection claims.
 
 ## Manual UI Smoke Notes
 

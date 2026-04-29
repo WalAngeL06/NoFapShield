@@ -36,17 +36,28 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current local product task: v0.2 manual local URL/domain trigger prototype.
-The implementation is local-only, uses a small placeholder risk list, records
-matching events through `EventStore`, and can delegate to the existing pause
-overlay when `--show-overlay` is passed. It does not add browser monitoring,
-DNS/proxy behavior, screenshot capture, network calls, services, hardening,
-password/login, or packaging implementation.
+Current task: No active task.
+
+Latest known product checkpoint:
+`c8e8c4a feat: add local URL/domain trigger prototype`.
+
+Latest known test/config checkpoint:
+`b76abd2 test: use ignored pytest basetemp`.
+
+The v0.2 manual local URL/domain trigger prototype is committed functionality.
+It is local-only, uses a small placeholder risk list, records matching events
+through `EventStore`, and can delegate to the existing pause overlay when
+`--show-overlay` is passed. It does not add automatic browser monitoring,
+DNS/proxy behavior, screenshot capture, network calls, cloud sync, telemetry,
+SMTP/email sending, services, NSSM, uninstall protection, hard process
+protection, password/login, packaging implementation, or complete
+blocking/porn detection claims.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
 (`19ec0c8`), onboarding (`caa9356`), default startup flow (`d9ce5d4`), and
-saved overlay actions (`223105a`).
+saved overlay actions (`223105a`), and manual local URL/domain trigger
+prototype (`c8e8c4a`).
 The latest known fix is `9753375 fix: recognize today's dashboard checkin`.
 
 `--demo-trigger --show-overlay` is current committed functionality. It records
@@ -69,7 +80,7 @@ Overlay launch paths read local
 overlay. Missing, empty, malformed, or unreadable actions fall back to default
 action cards.
 
-`--trigger-url` is current local uncommitted v0.2 prototype functionality. It
+`--trigger-url` is current committed v0.2 prototype functionality. It
 classifies a user-supplied URL/domain/string against the local placeholder risk
 list (`risk.example`, `blocked.example`, `relapse.example`). Matching inputs
 record a local `manual_url_trigger` friction event. Non-matches and malformed
@@ -129,11 +140,14 @@ list.
 - network calls
 - SMTP
 - Windows service installation
+- NSSM integration
 - uninstall protection
 - hard process protection
 - email sending or accountability delivery
 - password or login flow
 - packaged installer
+- packaging implementation
+- complete blocking or porn detection claims
 - full desktop UI
 
 ## Project Memory Workflow

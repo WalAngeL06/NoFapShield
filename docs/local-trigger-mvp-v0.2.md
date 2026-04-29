@@ -8,9 +8,11 @@ blocking, DNS interception, browser watching, networking, services, or
 hardening.
 
 Implementation status: the first manual/CLI local URL/domain trigger prototype
-has been added locally on `rebuild/v0-clean` and is pending user review/commit.
-It uses placeholder local risk domains only and remains manual, local-only, and
-non-monitoring.
+is committed on `rebuild/v0-clean` as
+`c8e8c4a feat: add local URL/domain trigger prototype`. The pytest basetemp
+configuration was committed as `b76abd2 test: use ignored pytest basetemp`.
+The trigger prototype uses placeholder local risk domains only and remains
+manual, local-only, and non-monitoring.
 
 ## 1. Problem Statement
 
@@ -60,6 +62,7 @@ classification step.
 - No DNS interception or proxy.
 - No screenshot capture.
 - No NSFW image model.
+- No automatic browser monitoring.
 - No browser history scraping.
 - No always-on background service.
 - No Windows service or NSSM integration.
@@ -68,8 +71,9 @@ classification step.
 - No network, cloud, or telemetry.
 - No SMTP or email sending.
 - No password/login flow.
+- No packaging implementation.
 - No medical or addiction-treatment claims.
-- No claim of complete blocking.
+- No complete blocking or porn detection claims.
 
 ## 5. Candidate Trigger Approaches
 

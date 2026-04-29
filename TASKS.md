@@ -13,7 +13,9 @@ This file is the single source of truth for current and next work.
 - Latest known committed release docs checkpoint:
   `1717458 docs: plan local trigger MVP for v0.2`
 - Latest known product checkpoint:
-  `223105a feat: use saved alternative actions in overlay`
+  `c8e8c4a feat: add local URL/domain trigger prototype`
+- Latest known test/config checkpoint:
+  `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
 
@@ -37,26 +39,13 @@ This file is the single source of truth for current and next work.
   alpha / developer preview.
 - `cffb7f9 docs: record v0.1 alpha release`
 - `b175e75 docs: plan Windows packaging path`
+- `1717458 docs: plan local trigger MVP for v0.2`
+- `c8e8c4a feat: add local URL/domain trigger prototype`
+- `b76abd2 test: use ignored pytest basetemp`
 
 ## Current Task
 
-Local URL/domain trigger prototype for v0.2 is implemented locally and pending
-user review/commit:
-
-- `src/shield/trigger.py`
-- `src/shield/app.py`
-- `src/shield/core/interfaces.py`
-- `src/shield/db/__init__.py`
-- `tests/test_trigger.py`
-- `tests/test_app.py`
-- `tests/conftest.py`
-- `pyproject.toml`
-- `README.md`
-- `ARCHITECTURE.md`
-- `docs/local-trigger-mvp-v0.2.md`
-- `STATUS.md`
-- `TASKS.md`
-- `AI_HANDOFF.md`
+No active task.
 
 ## Next Recommended Tasks
 
