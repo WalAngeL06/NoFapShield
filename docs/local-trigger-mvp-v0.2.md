@@ -22,6 +22,17 @@ prints the active local list, and `--set-risk-domains` stores valid normalized
 domains. Placeholder defaults remain the fallback, and no real adult domains
 are shipped.
 
+Current local implementation status: local allowlist / false-positive handling
+is implemented locally and pending user review/commit. Custom allow domains are
+stored in the local SQLite setting `trigger_allow_domains`.
+`--list-allow-domains` prints the local allowlist, and `--set-allow-domains`
+stores valid normalized allow domains. The allowlist has no placeholder
+defaults, overrides risk matches locally, records no friction event for
+allowlisted candidates, and launches no overlay for allowlisted candidates. The
+current local fix also makes trigger settings durable by default: when
+`--db-path` is omitted, Shield resolves a user-local SQLite database, while
+`--db-path` remains available for isolated tests and development runs.
+
 ## 1. Problem Statement
 
 - v0.1 proves the local UI, data, and overlay flow.
@@ -58,6 +69,8 @@ python -m shield.app --trigger-url "example.com"
 python -m shield.app --trigger-url "example.com" --show-overlay
 python -m shield.app --list-risk-domains
 python -m shield.app --set-risk-domains "risk.example,focus.example"
+python -m shield.app --list-allow-domains
+python -m shield.app --set-allow-domains "safe.example.com"
 ```
 
 - Event logging through the existing `EventStore`.
@@ -155,9 +168,13 @@ classification step.
 
 - Store a user-owned local risk list in `trigger_risk_domains`.
 - Add CLI helpers to list and set the active local risk domains.
+- Store a user-owned local allowlist in `trigger_allow_domains`.
+- Check allow domains before risk domains for local false-positive handling.
+- Add CLI helpers to list and set the local allowlist.
+- Persist trigger settings in a user-owned local SQLite database by default,
+  with `--db-path` as an explicit override for tests and development.
 - Consider how existing detection-sensitivity placeholder should map to local
   matcher behavior, if at all.
-- Consider an allowlist concept for local false-positive handling.
 
 ### Phase 4: Evaluate Browser Extension Or URL Watcher
 
@@ -170,13 +187,20 @@ classification step.
 ## 7. Data / Privacy Model
 
 - Use a local risk list only.
+- Use a local allowlist only.
+- Let allowlisted domains override broader local risk-domain matches.
 - Keep placeholder defaults as fallback when local settings are missing,
   malformed, empty, or all invalid.
+- Keep the allowlist empty when local settings are missing, malformed, empty,
+  or all invalid.
 - Do not ship real adult domains.
 - Do not perform remote lookups.
 - Do not add telemetry.
 - Do not upload browsing history.
 - Store trigger events in local SQLite only.
+- Store trigger risk/allow settings in local SQLite only. Default CLI
+  invocations use a durable user-local SQLite path; `--db-path` can point tests
+  and development runs at an isolated database.
 - Keep false-positive handling clear and local, for example through a future
   allowlist or editable local list.
 
@@ -198,6 +222,16 @@ Add tests for:
   domains.
 - CLI risk-list set does not wipe an existing valid list when no valid domains
   are provided.
+- Local allowlist parsing handles lists, comma-separated strings, and
+  newline-separated strings.
+- Local allowlist parsing ignores invalid entries and deduplicates valid
+  domains.
+- CLI allowlist set does not wipe an existing valid list when no valid domains
+  are provided.
+- Allowlist exact and subdomain matches override risk matches.
+- Default no-`--db-path` risk and allow settings persist across separate CLI
+  invocations.
+- Explicit `--db-path` continues to isolate test and development databases.
 - No network calls.
 
 ## 9. UX Behavior
@@ -219,4 +253,4 @@ Add tests for:
 
 ## 11. Recommended Next Implementation Task
 
-Add allowlist / false-positive handling.
+Add settings UI for local risk/allow list editing.

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from urllib.parse import urlsplit
 
 RISK_DOMAINS_SETTING_KEY = "trigger_risk_domains"
+ALLOW_DOMAINS_SETTING_KEY = "trigger_allow_domains"
 
 DEFAULT_RISK_DOMAINS: tuple[str, ...] = (
     "risk.example",
@@ -78,19 +79,35 @@ def match_trigger(candidate: str, risk_domains: Sequence[str]) -> TriggerMatch |
     return None
 
 
+def match_allowlist(candidate: str, allow_domains: Sequence[str]) -> TriggerMatch | None:
+    normalized_candidate = normalize_candidate(candidate)
+    candidate_domain = extract_domain(candidate)
+    if normalized_candidate is None or candidate_domain is None:
+        return None
+
+    for allow_domain in allow_domains:
+        allowed_domain = extract_domain(allow_domain)
+        if allowed_domain is None:
+            continue
+        if is_domain_match(candidate_domain, allowed_domain):
+            return TriggerMatch(
+                candidate=normalized_candidate,
+                candidate_domain=candidate_domain,
+                matched_domain=allowed_domain,
+            )
+    return None
+
+
 def parse_risk_domains(
     value: object,
     fallback: Sequence[str] = DEFAULT_RISK_DOMAINS,
 ) -> tuple[str, ...]:
-    domains: list[str] = []
-    seen: set[str] = set()
-    for candidate in _iter_risk_domain_candidates(value):
-        domain = extract_domain(candidate)
-        if domain is None or domain in seen:
-            continue
-        domains.append(domain)
-        seen.add(domain)
+    domains = _parse_domain_list(value)
     return tuple(domains) if domains else tuple(fallback)
+
+
+def parse_allow_domains(value: object) -> tuple[str, ...]:
+    return tuple(_parse_domain_list(value))
 
 
 def load_risk_domains(store) -> tuple[str, ...]:
@@ -99,6 +116,14 @@ def load_risk_domains(store) -> tuple[str, ...]:
     except Exception:
         return DEFAULT_RISK_DOMAINS
     return parse_risk_domains(value)
+
+
+def load_allow_domains(store) -> tuple[str, ...]:
+    try:
+        value = store.get_setting(ALLOW_DOMAINS_SETTING_KEY, None)
+    except Exception:
+        return ()
+    return parse_allow_domains(value)
 
 
 def _is_valid_domain(domain: str) -> bool:
@@ -110,7 +135,23 @@ def _is_valid_domain(domain: str) -> bool:
     return all(_DOMAIN_LABEL_RE.match(label) is not None for label in labels)
 
 
+def _parse_domain_list(value: object) -> list[str]:
+    domains: list[str] = []
+    seen: set[str] = set()
+    for candidate in _iter_domain_candidates(value):
+        domain = extract_domain(candidate)
+        if domain is None or domain in seen:
+            continue
+        domains.append(domain)
+        seen.add(domain)
+    return domains
+
+
 def _iter_risk_domain_candidates(value: object) -> tuple[str, ...]:
+    return _iter_domain_candidates(value)
+
+
+def _iter_domain_candidates(value: object) -> tuple[str, ...]:
     if isinstance(value, str):
         return tuple(part.strip() for part in re.split(r"[,\r\n]+", value))
     if isinstance(value, Sequence):

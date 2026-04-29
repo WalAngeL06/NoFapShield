@@ -17,6 +17,8 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --trigger-url --show-overlay`
 - `python -m shield.app --list-risk-domains`
 - `python -m shield.app --set-risk-domains`
+- `python -m shield.app --list-allow-domains`
+- `python -m shield.app --set-allow-domains`
 - `python -m shield.app --screen overlay`
 - `python -m shield.app --screen checkin`
 - `python -m shield.app --screen dashboard`
@@ -24,7 +26,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `138 passed`.
+Current tests: `170 passed`.
 
 Published release: `v0.1.0-alpha`.
 
@@ -38,7 +40,8 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current task: No active task.
+Current local product task: add local trigger allowlist / false-positive
+handling.
 
 Latest known product checkpoint:
 `712e62f feat: add editable local trigger risk list`.
@@ -62,6 +65,17 @@ The editable local risk-list expansion is committed functionality.
 list when the input has no valid domains. Placeholder defaults (`risk.example`,
 `blocked.example`, `relapse.example`) remain the fallback, and no real adult
 domains are shipped.
+
+The current local uncommitted v0.2 task adds a user-owned local allowlist for
+false-positive handling and fixes local trigger settings durability. Allow
+domains are stored in the SQLite setting `trigger_allow_domains`.
+`--list-allow-domains` prints the allowlist, and `--set-allow-domains` stores
+valid normalized domains without wiping the previous list when the input has no
+valid domains. Allowlisted domains override risk-domain matches locally and do
+not record friction events or open the overlay. When `--db-path` is omitted,
+the app now resolves a durable user-local SQLite database for trigger settings
+and events; `--db-path` still overrides the database path for tests and
+development.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
@@ -102,6 +116,13 @@ The editable risk-list expansion updates `--trigger-url` to use custom local
 settings when valid. Invalid, empty, missing, or malformed custom lists fall
 back to the placeholder defaults.
 
+The current local allowlist expansion updates `--trigger-url` to check
+`trigger_allow_domains` before risk domains. Allowlist matches print
+`trigger=allowlisted`, do not record events, and do not launch the overlay even
+when `--show-overlay` is passed. The risk-list and allowlist CLI helpers persist
+to a user-local SQLite database by default, so documented commands work across
+separate CLI invocations without requiring `--db-path`.
+
 Manual UI smoke test: `PASS` with non-blocking polish notes.
 
 Checked:
@@ -139,7 +160,7 @@ The v0.1 alpha release checklist is committed current documentation at
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.
 
-Next recommended task: Add allowlist / false-positive handling.
+Next recommended task: Add settings UI for local risk/allow list editing.
 
 ## Explicitly Out Of Scope
 

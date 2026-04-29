@@ -1,13 +1,17 @@
 import pytest
 
 from shield.trigger import (
+    ALLOW_DOMAINS_SETTING_KEY,
     DEFAULT_RISK_DOMAINS,
     RISK_DOMAINS_SETTING_KEY,
     extract_domain,
     is_domain_match,
+    load_allow_domains,
     load_risk_domains,
+    match_allowlist,
     match_trigger,
     normalize_candidate,
+    parse_allow_domains,
     parse_risk_domains,
 )
 
@@ -111,3 +115,63 @@ def test_load_risk_domains_falls_back_when_store_read_fails():
             raise RuntimeError("settings unavailable")
 
     assert load_risk_domains(BrokenStore()) == DEFAULT_RISK_DOMAINS
+
+
+def test_parse_allow_domains_missing_empty_or_malformed_returns_empty_tuple():
+    assert parse_allow_domains(None) == ()
+    assert parse_allow_domains([]) == ()
+    assert parse_allow_domains(" , \n ") == ()
+    assert parse_allow_domains({"domain": "safe.example.com"}) == ()
+
+
+def test_parse_allow_domains_accepts_list_and_dedupes_order():
+    assert parse_allow_domains(
+        [
+            " Safe.Example.Com ",
+            "bad_domain.test",
+            "sub.safe.example.com",
+            "https://safe.example.com/path",
+        ]
+    ) == ("safe.example.com", "sub.safe.example.com")
+
+
+def test_parse_allow_domains_accepts_comma_and_newline_separated_strings():
+    assert parse_allow_domains("Safe.Example.Com, rest.example\nsafe.example.com") == (
+        "safe.example.com",
+        "rest.example",
+    )
+
+
+def test_match_allowlist_accepts_exact_and_subdomain_matches():
+    exact = match_allowlist("safe.example.com", ["safe.example.com"])
+    subdomain = match_allowlist("sub.safe.example.com", ["safe.example.com"])
+
+    assert exact is not None
+    assert exact.candidate_domain == "safe.example.com"
+    assert exact.matched_domain == "safe.example.com"
+    assert subdomain is not None
+    assert subdomain.candidate_domain == "sub.safe.example.com"
+    assert subdomain.matched_domain == "safe.example.com"
+
+
+def test_match_allowlist_rejects_different_suffix():
+    assert match_allowlist("safe.example.com.evil.test", ["safe.example.com"]) is None
+
+
+def test_load_allow_domains_reads_store_setting_or_returns_empty_tuple():
+    class Store:
+        def get_setting(self, key, default=None):
+            assert key == ALLOW_DOMAINS_SETTING_KEY
+            del default
+            return ["Safe.Example.Com", "bad_domain.test"]
+
+    assert load_allow_domains(Store()) == ("safe.example.com",)
+
+
+def test_load_allow_domains_returns_empty_tuple_when_store_read_fails():
+    class BrokenStore:
+        def get_setting(self, key, default=None):
+            del key, default
+            raise RuntimeError("settings unavailable")
+
+    assert load_allow_domains(BrokenStore()) == ()

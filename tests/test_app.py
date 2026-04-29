@@ -5,9 +5,16 @@ from pathlib import Path
 
 import pytest
 
-from shield.app import main
+from shield.app import APP_DATA_DIR_ENV_VAR, main
 from shield.db import EventStore
-from shield.trigger import DEFAULT_RISK_DOMAINS, RISK_DOMAINS_SETTING_KEY
+from shield.trigger import ALLOW_DOMAINS_SETTING_KEY, DEFAULT_RISK_DOMAINS, RISK_DOMAINS_SETTING_KEY
+
+
+@pytest.fixture(autouse=True)
+def default_app_data_dir(tmp_path, monkeypatch) -> Path:
+    path = tmp_path / "app-data"
+    monkeypatch.setenv(APP_DATA_DIR_ENV_VAR, str(path))
+    return path
 
 
 def _parse_output(output: str) -> dict[str, str]:
@@ -377,6 +384,270 @@ def test_set_risk_domains_with_no_valid_domains_does_not_wipe_existing(tmp_path,
         assert store.get_setting(RISK_DOMAINS_SETTING_KEY) == ["focus.example"]
 
 
+def test_set_risk_domains_persists_to_default_app_data_path(default_app_data_dir, capsys):
+    result = main(["--set-risk-domains", "Example.Com, focus.example"])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["status"] == "saved"
+    assert parsed["domains"] == "example.com,focus.example"
+    assert (default_app_data_dir / "shield.db").exists()
+
+    result = main(["--list-risk-domains"])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["domains"] == "example.com,focus.example"
+    assert parsed["count"] == "2"
+
+
+def test_list_allow_domains_prints_empty_allowlist(tmp_path, capsys):
+    db_path = tmp_path / "settings.db"
+
+    result = main(["--list-allow-domains", "--db-path", str(db_path)])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["shield.allow_domains"] == "ok"
+    assert parsed["domains"] == ""
+    assert parsed["count"] == "0"
+
+
+def test_set_allow_domains_saves_comma_separated_normalized_domains(tmp_path, capsys):
+    db_path = tmp_path / "settings.db"
+
+    result = main(
+        [
+            "--set-allow-domains",
+            "Safe.Example.Com, rest.example, safe.example.com, bad_domain.test",
+            "--db-path",
+            str(db_path),
+        ]
+    )
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["shield.allow_domains"] == "ok"
+    assert parsed["action"] == "set"
+    assert parsed["status"] == "saved"
+    assert parsed["domains"] == "safe.example.com,rest.example"
+    assert parsed["count"] == "2"
+
+    with EventStore(db_path) as store:
+        assert store.get_setting(ALLOW_DOMAINS_SETTING_KEY) == [
+            "safe.example.com",
+            "rest.example",
+        ]
+
+
+def test_set_allow_domains_with_no_valid_domains_does_not_wipe_existing(tmp_path, capsys):
+    db_path = tmp_path / "settings.db"
+    with EventStore(db_path) as store:
+        store.set_setting(ALLOW_DOMAINS_SETTING_KEY, ["safe.example.com"])
+
+    result = main(
+        [
+            "--set-allow-domains",
+            "bad_domain.test, not a url",
+            "--db-path",
+            str(db_path),
+        ]
+    )
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["shield.allow_domains"] == "ok"
+    assert parsed["action"] == "set"
+    assert parsed["status"] == "no_valid_domains"
+    assert "domains" not in parsed
+
+    with EventStore(db_path) as store:
+        assert store.get_setting(ALLOW_DOMAINS_SETTING_KEY) == ["safe.example.com"]
+
+
+def test_set_allow_domains_persists_to_default_app_data_path(default_app_data_dir, capsys):
+    result = main(["--set-allow-domains", "Safe.Example.Com, rest.example"])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["status"] == "saved"
+    assert parsed["domains"] == "safe.example.com,rest.example"
+    assert (default_app_data_dir / "shield.db").exists()
+
+    result = main(["--list-allow-domains"])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["domains"] == "safe.example.com,rest.example"
+    assert parsed["count"] == "2"
+
+
+def test_trigger_url_allowlist_exact_match_overrides_risk_match(
+    tmp_path,
+    capsys,
+    monkeypatch,
+):
+    db_path = tmp_path / "trigger.db"
+    with EventStore(db_path) as store:
+        store.set_setting(RISK_DOMAINS_SETTING_KEY, ["example.com"])
+        store.set_setting(ALLOW_DOMAINS_SETTING_KEY, ["safe.example.com"])
+    overlay_calls: list[str | None] = []
+    monkeypatch.setattr(
+        "shield.app._run_overlay_screen",
+        lambda db_path=None: overlay_calls.append(db_path) or 99,
+    )
+
+    result = main(
+        [
+            "--trigger-url",
+            "safe.example.com",
+            "--show-overlay",
+            "--db-path",
+            str(db_path),
+        ]
+    )
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["shield.trigger_url"] == "ok"
+    assert parsed["trigger"] == "allowlisted"
+    assert parsed["candidate"] == "safe.example.com"
+    assert parsed["allowed_domain"] == "safe.example.com"
+    assert "overlay" not in parsed
+    assert overlay_calls == []
+    with EventStore(db_path) as store:
+        assert store.count_events() == 0
+
+
+def test_trigger_url_allowlist_subdomain_match_overrides_risk_match(
+    tmp_path,
+    capsys,
+    monkeypatch,
+):
+    db_path = tmp_path / "trigger.db"
+    with EventStore(db_path) as store:
+        store.set_setting(RISK_DOMAINS_SETTING_KEY, ["example.com"])
+        store.set_setting(ALLOW_DOMAINS_SETTING_KEY, ["safe.example.com"])
+    monkeypatch.setattr("shield.app._run_overlay_screen", lambda db_path=None: 99)
+
+    result = main(["--trigger-url", "sub.safe.example.com", "--db-path", str(db_path)])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["trigger"] == "allowlisted"
+    assert parsed["candidate"] == "sub.safe.example.com"
+    assert parsed["allowed_domain"] == "safe.example.com"
+    with EventStore(db_path) as store:
+        assert store.count_events() == 0
+
+
+def test_trigger_url_non_allowlisted_sibling_under_risk_domain_still_matches(
+    tmp_path,
+    capsys,
+):
+    db_path = tmp_path / "trigger.db"
+    with EventStore(db_path) as store:
+        store.set_setting(RISK_DOMAINS_SETTING_KEY, ["example.com"])
+        store.set_setting(ALLOW_DOMAINS_SETTING_KEY, ["safe.example.com"])
+
+    result = main(["--trigger-url", "bad.example.com", "--db-path", str(db_path)])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["trigger"] == "matched"
+    assert parsed["candidate"] == "bad.example.com"
+    assert parsed["matched_domain"] == "example.com"
+    with EventStore(db_path) as store:
+        assert store.count_events() == 1
+
+
+def test_trigger_url_uses_default_persisted_risk_list(default_app_data_dir, capsys):
+    result = main(["--set-risk-domains", "example.com"])
+    assert result == 0
+    capsys.readouterr()
+
+    result = main(["--trigger-url", "bad.example.com"])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["trigger"] == "matched"
+    assert parsed["candidate"] == "bad.example.com"
+    assert parsed["matched_domain"] == "example.com"
+    assert parsed["source"] == "manual_url_trigger"
+
+    with EventStore(default_app_data_dir / "shield.db") as store:
+        assert store.count_events() == 1
+
+
+def test_trigger_url_uses_default_persisted_allowlist_to_suppress_risk_match(
+    default_app_data_dir,
+    capsys,
+    monkeypatch,
+):
+    overlay_calls: list[str | None] = []
+    monkeypatch.setattr(
+        "shield.app._run_overlay_screen",
+        lambda db_path=None: overlay_calls.append(db_path) or 99,
+    )
+
+    assert main(["--set-risk-domains", "example.com"]) == 0
+    capsys.readouterr()
+    assert main(["--set-allow-domains", "safe.example.com"]) == 0
+    capsys.readouterr()
+
+    result = main(["--trigger-url", "safe.example.com", "--show-overlay"])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["trigger"] == "allowlisted"
+    assert parsed["candidate"] == "safe.example.com"
+    assert parsed["allowed_domain"] == "safe.example.com"
+    assert "overlay" not in parsed
+    assert overlay_calls == []
+
+    with EventStore(default_app_data_dir / "shield.db") as store:
+        assert store.count_events() == 0
+
+
+def test_explicit_db_path_still_controls_trigger_settings(
+    tmp_path,
+    default_app_data_dir,
+    capsys,
+):
+    explicit_db_path = tmp_path / "explicit.db"
+
+    result = main(["--set-risk-domains", "example.com", "--db-path", str(explicit_db_path)])
+    assert result == 0
+    capsys.readouterr()
+
+    result = main(["--list-risk-domains", "--db-path", str(explicit_db_path)])
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["domains"] == "example.com"
+
+    result = main(["--list-risk-domains"])
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["domains"] == ",".join(DEFAULT_RISK_DOMAINS)
+    assert (default_app_data_dir / "shield.db").exists()
+
+
+def test_trigger_url_allowlist_does_not_match_different_suffix(tmp_path, capsys):
+    db_path = tmp_path / "trigger.db"
+    with EventStore(db_path) as store:
+        store.set_setting(RISK_DOMAINS_SETTING_KEY, ["example.com"])
+        store.set_setting(ALLOW_DOMAINS_SETTING_KEY, ["safe.example.com"])
+
+    result = main(["--trigger-url", "example.com.evil.test", "--db-path", str(db_path)])
+
+    parsed = _parse_output(capsys.readouterr().out)
+    assert result == 0
+    assert parsed["trigger"] == "no_match"
+    assert parsed["candidate"] == "example.com.evil.test"
+    with EventStore(db_path) as store:
+        assert store.count_events() == 0
+
+
 def test_trigger_url_with_screen_errors(capsys):
     with pytest.raises(SystemExit) as exc:
         main(["--trigger-url", "risk.example", "--screen", "dashboard"])
@@ -412,6 +683,14 @@ def test_show_overlay_without_demo_trigger_errors(capsys):
         ["--set-risk-domains", "focus.example", "--trigger-url", "risk.example"],
         ["--set-risk-domains", "focus.example", "--demo-trigger"],
         ["--set-risk-domains", "focus.example", "--show-overlay"],
+        ["--list-allow-domains", "--screen", "dashboard"],
+        ["--list-allow-domains", "--trigger-url", "risk.example"],
+        ["--list-allow-domains", "--demo-trigger"],
+        ["--list-allow-domains", "--show-overlay"],
+        ["--set-allow-domains", "safe.example.com", "--screen", "dashboard"],
+        ["--set-allow-domains", "safe.example.com", "--trigger-url", "risk.example"],
+        ["--set-allow-domains", "safe.example.com", "--demo-trigger"],
+        ["--set-allow-domains", "safe.example.com", "--show-overlay"],
     ],
 )
 def test_risk_domain_commands_reject_other_actions(args, capsys):
@@ -428,6 +707,36 @@ def test_list_and_set_risk_domains_cannot_be_combined(capsys):
 
     assert exc.value.code == 2
     assert "--list-risk-domains cannot be used with --set-risk-domains" in capsys.readouterr().err
+
+
+def test_list_and_set_allow_domains_cannot_be_combined(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--list-allow-domains", "--set-allow-domains", "safe.example.com"])
+
+    assert exc.value.code == 2
+    assert "--list-allow-domains cannot be used with --set-allow-domains" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["--list-risk-domains", "--list-allow-domains"],
+        ["--set-risk-domains", "example.com", "--list-allow-domains"],
+        ["--list-risk-domains", "--set-allow-domains", "safe.example.com"],
+        [
+            "--set-risk-domains",
+            "example.com",
+            "--set-allow-domains",
+            "safe.example.com",
+        ],
+    ],
+)
+def test_risk_and_allow_domain_commands_cannot_be_combined(args, capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(args)
+
+    assert exc.value.code == 2
+    assert "cannot be combined" in capsys.readouterr().err
 
 
 def test_default_startup_without_completion_delegates_to_onboarding(tmp_path, monkeypatch):

@@ -33,8 +33,8 @@ to treat addiction, and does not claim to fully block or detect pornography.
 ## Current v0.2 Development Snapshot
 
 The current development branch adds a manual local URL/domain trigger prototype
-with a user-owned editable local risk list. This is not automatic browser
-monitoring, full blocking, or porn detection.
+with user-owned editable local risk and allow lists. This is not automatic
+browser monitoring, full blocking, or porn detection.
 
 The prototype:
 
@@ -42,6 +42,13 @@ The prototype:
   list.
 - Stores custom risk domains locally in SQLite settings under
   `trigger_risk_domains`.
+- Stores custom allow domains locally in SQLite settings under
+  `trigger_allow_domains`.
+- Persists trigger settings in a durable user-owned local SQLite database by
+  default; `--db-path` can override the database path for tests and
+  development.
+- Uses the local allowlist for false-positive handling; allowlisted domains
+  override broader local risk-domain matches.
 - Uses only safe placeholder domains such as `risk.example` as fallback
   defaults.
 - Ships no real adult domains.
@@ -49,7 +56,7 @@ The prototype:
 - Can delegate to the existing pause overlay when `--show-overlay` is passed.
 - Keeps all data local.
 
-Current automated verification snapshot: `138 passed`.
+Current automated verification snapshot: `170 passed`.
 
 ## What v0.1 Alpha Does Not Include
 
@@ -169,15 +176,34 @@ Set a custom local risk list:
 python -m shield.app --set-risk-domains "risk.example,focus.example"
 ```
 
+List the local allowlist:
+
+```powershell
+python -m shield.app --list-allow-domains
+```
+
+Set a custom local allowlist:
+
+```powershell
+python -m shield.app --set-allow-domains "safe.example.com"
+```
+
 The screen commands open PyQt6 windows, and the overlay command opens fullscreen
 UI. Treat them as manual UI checks, not automated test commands.
 
 The `--trigger-url` command is a manual local prototype. The editable risk list
-is user-owned and local-only, with placeholder defaults as fallback. It does not
-monitor browsers, inspect browser history, intercept DNS, capture screenshots,
-call the network, sync to cloud services, send email, add password/login
-behavior, install services, harden processes, add packaging, or claim complete
-blocking or porn detection.
+and allowlist are user-owned and local-only, with placeholder risk defaults as
+fallback. The allowlist is for local false-positive handling and overrides risk
+matches locally. It does not monitor browsers, inspect browser history,
+intercept DNS, capture screenshots, call the network, sync to cloud services,
+send email, add password/login behavior, install services, harden processes,
+add packaging, or claim complete blocking or porn detection.
+
+When no `--db-path` is provided, Shield stores local trigger settings and
+events in a user-local app data SQLite database. On Windows this defaults under
+`LOCALAPPDATA\NoFapShield\shield.db`; on other platforms it defaults under
+`~/.local/share/nofapshield/shield.db`. Use `--db-path` to point tests or
+development runs at a separate SQLite file.
 
 ## Current Known Polish Notes
 

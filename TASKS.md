@@ -5,7 +5,7 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `138 passed`
+- Tests passing: `170 passed`
 - Published release:
   `v0.1.0-alpha` / `Shield v0.1.0-alpha — Local-only pause layer MVP`
 - Release target commit:
@@ -46,11 +46,25 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Add local trigger allowlist / false-positive handling is implemented locally and
+pending user review/commit. The current targeted fix makes default local trigger
+settings durable by resolving a user-local SQLite database when `--db-path` is
+omitted, while preserving explicit `--db-path` behavior:
+
+- `src/shield/trigger.py`
+- `src/shield/app.py`
+- `tests/test_trigger.py`
+- `tests/test_app.py`
+- `README.md`
+- `ARCHITECTURE.md`
+- `docs/local-trigger-mvp-v0.2.md`
+- `STATUS.md`
+- `TASKS.md`
+- `AI_HANDOFF.md`
 
 ## Next Recommended Tasks
 
-1. Add allowlist / false-positive handling.
+1. Add settings UI for local risk/allow list editing.
 2. Later: Add PyInstaller one-folder build script/spec.
 3. Later: installer planning after raw executable build is stable.
 4. Later: UI visual polish.
