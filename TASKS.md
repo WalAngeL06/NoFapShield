@@ -28,11 +28,17 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Release checklist documentation for v0.1 alpha is prepared locally and pending
+user review/commit:
+
+- `docs/release-checklist-v0.1.md`
+- `STATUS.md`
+- `TASKS.md`
+- `AI_HANDOFF.md`
 
 ## Next Recommended Tasks
 
-1. Prepare a v0.1 alpha release notes/tag checklist.
+1. Final v0.1 alpha verification and tag.
 2. Later: installer/release packaging.
 3. Later: optional local detection.
 4. Later: optional DNS/domain heuristics.

@@ -75,8 +75,15 @@ Known non-blocking polish notes:
 - overall UI needs visual polish later, but this does not block v0.1 alpha
 
 README/release polish for v0.1 alpha has been completed locally in the working
-tree. Next recommended product task: Prepare a v0.1 alpha release notes/tag
-checklist.
+tree.
+
+Release checklist preparation for v0.1 alpha is the current local documentation
+change, pending user review and commit. The checklist lives at
+`docs/release-checklist-v0.1.md` and defines the release target, verification
+snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
+manual tag commands.
+
+Next recommended task: Final v0.1 alpha verification and tag.
 
 ## Explicitly Out Of Scope
 
