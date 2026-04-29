@@ -34,7 +34,8 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-README/release polish for v0.1 alpha.
+README/release polish for v0.1 alpha is completed locally. Current recommended
+next task: Prepare a v0.1 alpha release notes/tag checklist.
 
 ## Handoff Protocol
 
@@ -71,6 +72,7 @@ Decision history rule: "If a decision changes or a previous decision is reversed
 - `d9ce5d4 feat: add default startup flow`
 - `223105a feat: use saved alternative actions in overlay`
 - Manual UI smoke test: `PASS`; no P0 blocker found.
+- README/release polish for v0.1 alpha completed locally.
 
 ## Manual UI Smoke Notes
 

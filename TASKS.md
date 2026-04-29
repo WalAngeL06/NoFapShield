@@ -24,6 +24,7 @@ This file is the single source of truth for current and next work.
 - `d9ce5d4 feat: add default startup flow`
 - `223105a feat: use saved alternative actions in overlay`
 - Manual UI smoke test: `PASS` with non-blocking polish notes.
+- README/release polish for v0.1 alpha completed locally.
 
 ## Current Task
 
@@ -31,10 +32,10 @@ No active task.
 
 ## Next Recommended Tasks
 
-1. README/release polish for v0.1 alpha.
-2. Later: optional local detection.
-3. Later: optional DNS/domain heuristics.
-4. Later: installer/release packaging.
+1. Prepare a v0.1 alpha release notes/tag checklist.
+2. Later: installer/release packaging.
+3. Later: optional local detection.
+4. Later: optional DNS/domain heuristics.
 
 ## Known Non-Blocking Polish Notes
 

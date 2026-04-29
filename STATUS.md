@@ -1,6 +1,6 @@
 # Project Status - Shield v0.1
 
-_Last updated: 2026-04-28_
+_Last updated: 2026-04-29_
 
 ## Current Scope
 
@@ -74,7 +74,9 @@ Known non-blocking polish notes:
 - dashboard is functional but could be more polished
 - overall UI needs visual polish later, but this does not block v0.1 alpha
 
-Next recommended product task: README/release polish for v0.1 alpha.
+README/release polish for v0.1 alpha has been completed locally in the working
+tree. Next recommended product task: Prepare a v0.1 alpha release notes/tag
+checklist.
 
 ## Explicitly Out Of Scope
 
