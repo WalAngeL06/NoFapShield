@@ -5,6 +5,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from urllib.parse import urlsplit
 
+RISK_DOMAINS_SETTING_KEY = "trigger_risk_domains"
+
 DEFAULT_RISK_DOMAINS: tuple[str, ...] = (
     "risk.example",
     "blocked.example",
@@ -76,6 +78,29 @@ def match_trigger(candidate: str, risk_domains: Sequence[str]) -> TriggerMatch |
     return None
 
 
+def parse_risk_domains(
+    value: object,
+    fallback: Sequence[str] = DEFAULT_RISK_DOMAINS,
+) -> tuple[str, ...]:
+    domains: list[str] = []
+    seen: set[str] = set()
+    for candidate in _iter_risk_domain_candidates(value):
+        domain = extract_domain(candidate)
+        if domain is None or domain in seen:
+            continue
+        domains.append(domain)
+        seen.add(domain)
+    return tuple(domains) if domains else tuple(fallback)
+
+
+def load_risk_domains(store) -> tuple[str, ...]:
+    try:
+        value = store.get_setting(RISK_DOMAINS_SETTING_KEY, None)
+    except Exception:
+        return DEFAULT_RISK_DOMAINS
+    return parse_risk_domains(value)
+
+
 def _is_valid_domain(domain: str) -> bool:
     if not domain or len(domain) > 253:
         return False
@@ -83,3 +108,15 @@ def _is_valid_domain(domain: str) -> bool:
     if len(labels) < 2:
         return False
     return all(_DOMAIN_LABEL_RE.match(label) is not None for label in labels)
+
+
+def _iter_risk_domain_candidates(value: object) -> tuple[str, ...]:
+    if isinstance(value, str):
+        return tuple(part.strip() for part in re.split(r"[,\r\n]+", value))
+    if isinstance(value, Sequence):
+        parts: list[str] = []
+        for item in value:
+            if isinstance(item, str):
+                parts.extend(part.strip() for part in re.split(r"[,\r\n]+", item))
+        return tuple(parts)
+    return ()

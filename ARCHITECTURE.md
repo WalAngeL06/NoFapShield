@@ -13,8 +13,9 @@ old root-level architecture.
   - Dispatches default startup, supported demo commands, and UI commands.
 - `src/shield/trigger.py`
   - Pure local URL/domain trigger helpers.
-  - Contains placeholder prototype risk domains and matcher functions for the
-    manual `--trigger-url` flow.
+  - Contains placeholder prototype risk domains, editable risk-list parsing,
+    settings loading helpers, and matcher functions for the manual
+    `--trigger-url` flow.
 - `src/shield/core/`
   - Lightweight dataclasses, config, and orchestration helpers.
   - Contains `Config`, `FrictionEvent`, trigger source types, and
@@ -39,6 +40,8 @@ python -m shield.app --demo-trigger
 python -m shield.app --demo-trigger --show-overlay
 python -m shield.app --trigger-url "risk.example"
 python -m shield.app --trigger-url "risk.example" --show-overlay
+python -m shield.app --list-risk-domains
+python -m shield.app --set-risk-domains "risk.example,focus.example"
 python -m shield.app --screen overlay
 python -m shield.app --screen checkin
 python -m shield.app --screen dashboard
@@ -58,11 +61,15 @@ local `alternative_actions` settings and pass them to the overlay when present;
 the overlay falls back to default action cards otherwise.
 
 `--trigger-url` is a manual local v0.2 prototype. It classifies a supplied
-URL/domain/string against a small local placeholder risk list, records a local
+URL/domain/string against the active local risk list, records a local
 `manual_url_trigger` friction event on match, and can delegate to the existing
-overlay path with `--show-overlay`. It does not monitor browsers, inspect
-browser history, intercept DNS, capture screenshots, call the network, or claim
-complete blocking.
+overlay path with `--show-overlay`. The active risk list is read from the local
+SQLite setting `trigger_risk_domains`; invalid, empty, missing, or malformed
+settings fall back to the safe placeholder defaults. `--list-risk-domains`
+prints the active list, and `--set-risk-domains` stores a normalized custom
+local list. No real adult domains are shipped. It does not monitor browsers,
+inspect browser history, intercept DNS, capture screenshots, call the network,
+or claim complete blocking or porn detection.
 
 `--screen onboarding` saves goal text, alternative actions, optional local email
 placeholder, and an onboarding completion flag through the local settings store.

@@ -15,6 +15,8 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --demo-trigger --show-overlay`
 - `python -m shield.app --trigger-url`
 - `python -m shield.app --trigger-url --show-overlay`
+- `python -m shield.app --list-risk-domains`
+- `python -m shield.app --set-risk-domains`
 - `python -m shield.app --screen overlay`
 - `python -m shield.app --screen checkin`
 - `python -m shield.app --screen dashboard`
@@ -22,7 +24,7 @@ The repository is a clean v0.1 scaffold. It includes:
 - `python -m shield.app --screen onboarding`
 - durable AI project memory docs for handoff and process continuity
 
-Current tests: `113 passed`.
+Current tests: `138 passed`.
 
 Published release: `v0.1.0-alpha`.
 
@@ -36,7 +38,8 @@ Published release: `v0.1.0-alpha`.
 - Working tree was clean before tag
 - No packaged installer yet
 
-Current task: No active task.
+Current local product task: expand local trigger configuration / editable local
+risk list.
 
 Latest known product checkpoint:
 `c8e8c4a feat: add local URL/domain trigger prototype`.
@@ -52,6 +55,14 @@ DNS/proxy behavior, screenshot capture, network calls, cloud sync, telemetry,
 SMTP/email sending, services, NSSM, uninstall protection, hard process
 protection, password/login, packaging implementation, or complete
 blocking/porn detection claims.
+
+The current local uncommitted v0.2 task expands trigger configuration so
+`--trigger-url` can use a user-owned local risk list from the SQLite setting
+`trigger_risk_domains`. `--list-risk-domains` prints the active list, and
+`--set-risk-domains` stores valid normalized domains without wiping the
+previous list when the input has no valid domains. Placeholder defaults
+(`risk.example`, `blocked.example`, `relapse.example`) remain the fallback, and
+no real adult domains are shipped.
 
 Completed product checkpoints include the committed read-only dashboard
 (`6f50b55`), local settings screen (`78526cd`), demo-overlay flow
@@ -87,6 +98,10 @@ record a local `manual_url_trigger` friction event. Non-matches and malformed
 inputs do not record events or open the overlay. `--trigger-url --show-overlay`
 delegates to the existing overlay launch path and uses saved alternative
 actions when available.
+
+The current local editable risk-list expansion updates `--trigger-url` to use
+custom local settings when valid. Invalid, empty, missing, or malformed custom
+lists fall back to the placeholder defaults.
 
 Manual UI smoke test: `PASS` with non-blocking polish notes.
 
@@ -125,8 +140,7 @@ The v0.1 alpha release checklist is committed current documentation at
 snapshot, explicit exclusions, pre-tag checklist, draft release notes, and
 manual tag commands.
 
-Next recommended task: Expand local trigger configuration / editable local risk
-list.
+Next recommended task: Add allowlist / false-positive handling.
 
 ## Explicitly Out Of Scope
 

@@ -7,7 +7,15 @@ import uuid
 
 from shield.core import Config, FrictionEvent, Orchestrator, TriggerSource
 from shield.db import EventStore
-from shield.trigger import DEFAULT_RISK_DOMAINS, extract_domain, match_trigger, normalize_candidate
+from shield.trigger import (
+    DEFAULT_RISK_DOMAINS,
+    RISK_DOMAINS_SETTING_KEY,
+    extract_domain,
+    load_risk_domains,
+    match_trigger,
+    normalize_candidate,
+    parse_risk_domains,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -31,12 +39,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--show-overlay",
         action="store_true",
-        help="launch the pause overlay after --demo-trigger records its event",
+        help="launch the pause overlay after --demo-trigger or --trigger-url records its event",
     )
     parser.add_argument(
         "--trigger-url",
         default=None,
-        help="classify a supplied URL/domain against the local prototype risk list",
+        help="classify a supplied URL/domain against the active local risk list",
+    )
+    parser.add_argument(
+        "--list-risk-domains",
+        action="store_true",
+        help="print the active local risk domains used by --trigger-url",
+    )
+    parser.add_argument(
+        "--set-risk-domains",
+        default=None,
+        help="store a comma- or newline-separated local risk domain list",
     )
     return parser
 
@@ -156,6 +174,44 @@ def _print_trigger_match(event: FrictionEvent, event_id: int, match) -> None:
     print(f"reason={event.reason}")
 
 
+def _load_risk_domains(db_path: str) -> tuple[str, ...]:
+    try:
+        with EventStore(db_path) as store:
+            return load_risk_domains(store)
+    except Exception:
+        return DEFAULT_RISK_DOMAINS
+
+
+def _print_risk_domains(domains: Sequence[str]) -> None:
+    print("shield.risk_domains=ok")
+    print(f"domains={','.join(domains)}")
+    print(f"count={len(domains)}")
+
+
+def _run_list_risk_domains(db_path: str) -> int:
+    _print_risk_domains(_load_risk_domains(db_path))
+    return 0
+
+
+def _run_set_risk_domains(db_path: str, value: str) -> int:
+    domains = parse_risk_domains(value, fallback=())
+    if not domains:
+        print("shield.risk_domains=ok")
+        print("action=set")
+        print("status=no_valid_domains")
+        return 0
+
+    with EventStore(db_path) as store:
+        store.set_setting(RISK_DOMAINS_SETTING_KEY, list(domains))
+
+    print("shield.risk_domains=ok")
+    print("action=set")
+    print("status=saved")
+    print(f"domains={','.join(domains)}")
+    print(f"count={len(domains)}")
+    return 0
+
+
 def _run_url_trigger(
     config: Config,
     db_path: str,
@@ -168,7 +224,7 @@ def _run_url_trigger(
         _print_trigger_invalid(normalized_candidate)
         return 0
 
-    match = match_trigger(candidate, DEFAULT_RISK_DOMAINS)
+    match = match_trigger(candidate, _load_risk_domains(db_path))
     if match is None:
         _print_trigger_no_match(candidate_domain)
         return 0
@@ -195,6 +251,19 @@ def _run_url_trigger(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    has_risk_domain_command = args.list_risk_domains or args.set_risk_domains is not None
+    if args.list_risk_domains and args.set_risk_domains is not None:
+        parser.error("--list-risk-domains cannot be used with --set-risk-domains")
+    if has_risk_domain_command and (
+        args.screen is not None
+        or args.demo_trigger
+        or args.trigger_url is not None
+        or args.show_overlay
+    ):
+        parser.error(
+            "--list-risk-domains/--set-risk-domains cannot be combined with "
+            "--screen, --demo-trigger, --trigger-url, or --show-overlay"
+        )
     if args.demo_trigger and args.trigger_url is not None:
         parser.error("--demo-trigger cannot be used with --trigger-url")
     if args.trigger_url is not None and args.screen is not None:
@@ -206,6 +275,11 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     config = Config()
     db_path = args.db_path if args.db_path is not None else config.db_path
+    if args.list_risk_domains:
+        return _run_list_risk_domains(db_path)
+    if args.set_risk_domains is not None:
+        return _run_set_risk_domains(db_path, args.set_risk_domains)
+
     if args.screen == "overlay":
         return _run_overlay_screen(db_path)
     if args.screen == "dashboard":

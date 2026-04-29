@@ -14,6 +14,12 @@ configuration was committed as `b76abd2 test: use ignored pytest basetemp`.
 The trigger prototype uses placeholder local risk domains only and remains
 manual, local-only, and non-monitoring.
 
+Current local implementation status: editable local risk-list configuration is
+implemented locally and pending user review/commit. Custom domains are stored in
+the local SQLite setting `trigger_risk_domains`. `--list-risk-domains` prints
+the active local list, and `--set-risk-domains` stores valid normalized domains.
+Placeholder defaults remain the fallback, and no real adult domains are shipped.
+
 ## 1. Problem Statement
 
 - v0.1 proves the local UI, data, and overlay flow.
@@ -41,12 +47,15 @@ added in a later phase.
 Start with:
 
 - A local domain/URL matcher core.
-- A small local risk list stored in the repo or in local config.
+- A small local risk list stored in local config, with safe placeholder domains
+  as fallback defaults.
 - A CLI/manual trigger command, for example:
 
 ```powershell
 python -m shield.app --trigger-url "example.com"
 python -m shield.app --trigger-url "example.com" --show-overlay
+python -m shield.app --list-risk-domains
+python -m shield.app --set-risk-domains "risk.example,focus.example"
 ```
 
 - Event logging through the existing `EventStore`.
@@ -142,7 +151,8 @@ classification step.
 
 ### Phase 3: Settings Integration
 
-- Consider local risk-list editing or import if appropriate.
+- Store a user-owned local risk list in `trigger_risk_domains`.
+- Add CLI helpers to list and set the active local risk domains.
 - Consider how existing detection-sensitivity placeholder should map to local
   matcher behavior, if at all.
 - Consider an allowlist concept for local false-positive handling.
@@ -158,6 +168,9 @@ classification step.
 ## 7. Data / Privacy Model
 
 - Use a local risk list only.
+- Keep placeholder defaults as fallback when local settings are missing,
+  malformed, empty, or all invalid.
+- Do not ship real adult domains.
 - Do not perform remote lookups.
 - Do not add telemetry.
 - Do not upload browsing history.
@@ -177,6 +190,12 @@ Add tests for:
 - CLI trigger records a local event.
 - CLI trigger with `--show-overlay` delegates without launching real UI in
   tests.
+- Local risk-list parsing handles lists, comma-separated strings, and
+  newline-separated strings.
+- Local risk-list parsing ignores invalid entries and deduplicates valid
+  domains.
+- CLI risk-list set does not wipe an existing valid list when no valid domains
+  are provided.
 - No network calls.
 
 ## 9. UX Behavior
@@ -198,4 +217,4 @@ Add tests for:
 
 ## 11. Recommended Next Implementation Task
 
-Expand local trigger configuration / editable local risk list.
+Add allowlist / false-positive handling.

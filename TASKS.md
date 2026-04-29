@@ -5,7 +5,7 @@ This file is the single source of truth for current and next work.
 ## Current State
 
 - Working branch: `rebuild/v0-clean`
-- Tests passing: `113 passed`
+- Tests passing: `138 passed`
 - Published release:
   `v0.1.0-alpha` / `Shield v0.1.0-alpha — Local-only pause layer MVP`
 - Release target commit:
@@ -45,16 +45,27 @@ This file is the single source of truth for current and next work.
 
 ## Current Task
 
-No active task.
+Expand local trigger configuration / editable local risk list is implemented
+locally and pending user review/commit:
+
+- `src/shield/trigger.py`
+- `src/shield/app.py`
+- `tests/test_trigger.py`
+- `tests/test_app.py`
+- `README.md`
+- `ARCHITECTURE.md`
+- `docs/local-trigger-mvp-v0.2.md`
+- `STATUS.md`
+- `TASKS.md`
+- `AI_HANDOFF.md`
 
 ## Next Recommended Tasks
 
-1. Expand local trigger configuration / editable local risk list.
-2. Later: Add allowlist/false-positive handling.
-3. Later: Add PyInstaller one-folder build script/spec.
-4. Later: installer planning after raw executable build is stable.
-5. Later: UI visual polish.
-6. Later: optional browser extension or URL watcher evaluation.
+1. Add allowlist / false-positive handling.
+2. Later: Add PyInstaller one-folder build script/spec.
+3. Later: installer planning after raw executable build is stable.
+4. Later: UI visual polish.
+5. Later: optional browser extension or URL watcher evaluation.
 
 ## Known Non-Blocking Polish Notes
 

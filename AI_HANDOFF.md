@@ -17,11 +17,12 @@ This is the fast-start summary for the next AI assistant.
   `b76abd2 test: use ignored pytest basetemp`
 - Latest known fix:
   `9753375 fix: recognize today's dashboard checkin`
-- Current tests: `113 passed`
+- Current tests: `138 passed`
 - Manual UI smoke: `PASS`
 - Release type: pre-release / alpha / developer preview
 - Packaged installer: not included yet
-- Current task: No active task.
+- Current local product task: expand local trigger configuration / editable
+  local risk list, pending user review/commit.
 
 ## What Exists Now
 
@@ -36,8 +37,10 @@ This is the fast-start summary for the next AI assistant.
 - overlay action cards use saved local `alternative_actions`
 - local SQLite event/check-in/settings store
 - manual local URL/domain trigger prototype (`--trigger-url`)
-- local placeholder trigger risk list: `risk.example`, `blocked.example`,
-  `relapse.example`
+- local editable risk list setting: `trigger_risk_domains`
+- local risk-list CLI helpers: `--list-risk-domains` and `--set-risk-domains`
+- local placeholder trigger risk list fallback: `risk.example`,
+  `blocked.example`, `relapse.example`
 
 ## What Is Not Present
 
@@ -56,7 +59,7 @@ This is the fast-start summary for the next AI assistant.
 
 ## Current Recommended Next Task
 
-Expand local trigger configuration / editable local risk list.
+Add allowlist / false-positive handling.
 
 ## Handoff Protocol
 
@@ -109,6 +112,10 @@ Decision history rule: "If a decision changes or a previous decision is reversed
   services, NSSM, uninstall protection, hard process protection,
   password/login, packaging implementation, or complete blocking/porn
   detection claims.
+- Local editable risk-list expansion is implemented locally and pending user
+  review/commit. It stores user-owned domains in local SQLite setting
+  `trigger_risk_domains`, adds `--list-risk-domains` and `--set-risk-domains`,
+  preserves placeholder defaults as fallback, and ships no real adult domains.
 
 ## Manual UI Smoke Notes
 
